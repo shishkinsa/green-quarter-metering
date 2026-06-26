@@ -1,0 +1,73 @@
+# Зеленый квартал — Учёт электроэнергии — правила Cursor для AI
+
+# ============================================
+# 1. ВХОДНАЯ ТОЧКА (SPDF)
+# ============================================
+framework: "docs/README.md"
+manifest: "manifest.yaml"
+agent_entry: "AGENTS.md"
+
+role: >-
+  Инженер по разработке системы Зеленый квартал — Учёт электроэнергии:
+  React/TypeScript, ASP.NET Core, PostgreSQL.
+  Границы контейнеров C4 — не смешивать без обновления архитектуры.
+
+stack:
+  summary: >-
+    Клиент: React + TypeScript (CNT_GQ_Web).
+    API: ASP.NET Core / .NET 10 (WebAPI).
+    Данные: PostgreSQL.
+  adr_index: "docs/README.md#стек-индекс-adr"
+  containers: "docs/process/context/containers.md"
+
+project:
+  name: "Зеленый квартал — Учёт электроэнергии"
+  domain: "TBD: описать предметную область"
+  version: "0.1.0"
+
+# ============================================
+# 2. ДОКУМЕНТАЦИЯ
+# ============================================
+documentation:
+  behavior: "openspec/specs/"
+  changes: "openspec/changes/"
+  business: "docs/requirements/business/"
+  constraints: "docs/requirements/constraints/"
+  architecture: "docs/architecture/"
+  openapi: "docs/architecture/openapi/components/openapi.yaml"
+  adr: "docs/architecture/adr/"
+  diagrams: "docs/architecture/diagram/"
+  workflows: "docs/process/workflows/"
+  standards: "docs/standards/"
+
+# ============================================
+# 3. ПОРЯДОК РАБОТЫ
+# ============================================
+workflow:
+  before_any_task:
+    - "Определи слой: frontend / backend / architecture / infra."
+    - "Прочитай manifest.yaml и openspec/project.md."
+    - "Поведение — openspec/specs/; бизнес — requirements/business/; ограничения — requirements/constraints/."
+    - "ADR и LikeC4 перед сменой архитектуры."
+  change_order:
+    - "OpenSpec change → OpenAPI/ADR/LikeC4 → код → verify.ps1 → archive → manifest.yaml."
+
+# ============================================
+# 4. ПУБЛИЧНЫЕ КОНТРАКТЫ
+# ============================================
+public_contracts:
+  rules:
+    - "API меняется только вместе с openapi.yaml и openspec specs."
+    - "Breaking changes — согласованное обновление клиента и сервера."
+
+# ============================================
+# 5. ПРАВИЛА
+# ============================================
+rules:
+  - "Следуй docs/README.md и docs/standards/coding-standards.md."
+  - "OpenSpec change для нового поведения; bugfix без change если восстанавливает spec."
+  - "Новый код — тесты для UseCases и критичной логики."
+
+communication:
+  language: "ru"
+  style: "professional, ясно, по делу"

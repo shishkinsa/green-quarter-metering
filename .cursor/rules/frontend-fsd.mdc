@@ -1,0 +1,15 @@
+---
+description: Frontend FSD — слои и импорты
+globs:
+  - src/frontend/**/*
+alwaysApply: false
+---
+
+# Frontend (FSD)
+
+Структура: [docs/architecture/specs/frontend.md](docs/architecture/specs/frontend.md).
+
+- Импорт только вниз по слоям: app → pages → widgets → features → entities → shared
+- Публичный API слоя — через `index.ts`
+- Именование: [docs/standards/naming/typescript.md](docs/standards/naming/typescript.md), [docs/standards/naming/react.md](docs/standards/naming/react.md)
+- TSDoc: [docs/standards/coding-standards.md](docs/standards/coding-standards.md) для `shared/api`, `entities/*/api`, экспортируемых компонентов

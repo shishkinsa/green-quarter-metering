@@ -1,0 +1,20 @@
+---
+description: Docs-first — OpenSpec, ADR, OpenAPI, диаграммы
+globs:
+  - docs/**/*
+  - openspec/**/*
+alwaysApply: false
+---
+
+# Документация
+
+Порядок изменений: **OpenSpec change → архитектура → код → archive**.
+
+- Поведение (канон): `openspec/specs/<capability>/spec.md`
+- Изменения: `openspec/changes/<id>/` (proposal, tasks, delta specs)
+- Бизнес: [docs/requirements/business/](docs/requirements/business/)
+- ADR: [docs/architecture/adr/template.md](docs/architecture/adr/template.md)
+- REST-контракт: [docs/architecture/openapi/components/openapi.yaml](docs/architecture/openapi/components/openapi.yaml)
+- C4: LikeC4 в `docs/architecture/diagram/` + [docs/process/context/containers.md](docs/process/context/containers.md)
+- SPDF: [docs/README.md](docs/README.md), [manifest.yaml](manifest.yaml)
+- Не противоречь принятым ADR без нового ADR

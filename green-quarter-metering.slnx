@@ -1,0 +1,33 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.monitoring.yml" />
+    <File Path="docker-compose.yml" />
+    <File Path="src/.editorconfig" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/lib/">
+    <Project Path="src/lib/GQ.Shared.Observability/GQ.Shared.Observability.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/0 Utils/">
+    <Project Path="src/webapi/cnt_gq_webapi/0 Utils/GQ.WebApi.Utils/GQ.WebApi.Utils.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/1 Entities/">
+    <Project Path="src/webapi/cnt_gq_webapi/1 Entities/GQ.WebApi.Entities/GQ.WebApi.Entities.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/2 Infrastructure.Interfaces/">
+    <Project Path="src/webapi/cnt_gq_webapi/2 Infrastructure.Interfaces/GQ.WebApi.Infrastructure.Interfaces/GQ.WebApi.Infrastructure.Interfaces.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/3 UseCases/">
+    <Project Path="src/webapi/cnt_gq_webapi/3 UseCases/GQ.WebApi.UseCases/GQ.WebApi.UseCases.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/5 Infrastructure.Implementation/">
+    <Project Path="src/webapi/cnt_gq_webapi/5 Infrastructure.Implementation/GQ.WebApi.DataAccess.Postgres/GQ.WebApi.DataAccess.Postgres.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/6 WebApp/">
+    <Project Path="src/webapi/cnt_gq_webapi/6 WebApp/GQ.WebApi.WebApp.csproj" />
+  </Folder>
+  <Folder Name="/src/webapi/cnt_gq_webapi/7 Tests/">
+    <Project Path="src/webapi/cnt_gq_webapi/7 Tests/GQ.WebApi.Tests/GQ.WebApi.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,15 @@
+{
+  "name": "templates-for-ai-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full stack шаблон: docs-first + OpenSpec + Clean Architecture + FSD + Cursor AI",
+  "scripts": {
+    "openspec:validate": "openspec validate --specs --strict --no-interactive",
+    "openspec:validate:all": "openspec validate --all --strict --no-interactive",
+    "openspec:list": "openspec list --specs",
+    "verify": "powershell -ExecutionPolicy Bypass -File scripts/verify.ps1"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "^1.4.1"
+  }
+}

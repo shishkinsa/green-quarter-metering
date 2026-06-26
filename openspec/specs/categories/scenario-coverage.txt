@@ -1,0 +1,2 @@
+# Categories — scenario → test mapping
+List categories|ListCategories_ReturnsSeededItems

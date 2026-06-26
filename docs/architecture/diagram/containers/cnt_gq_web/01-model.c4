@@ -1,0 +1,4 @@
+// Контейнер CNT_GQ_Web — детализация по мере роста (FSD-слои как components)
+
+// TBD: добавить components (app, pages, features, entities, shared)
+// См. docs/architecture/specs/frontend.md

@@ -1,0 +1,15 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/bin
+**/obj
+**/dist
+**/TestResults
+**/.vs
+**/.idea
+**/_ref-gh
+**/_ref-greenhouse
+**/.env
+**/.env.*
+!**/.env.example
+**/agent-transcripts

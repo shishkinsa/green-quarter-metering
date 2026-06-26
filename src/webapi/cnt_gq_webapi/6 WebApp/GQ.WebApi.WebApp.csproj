@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\3 UseCases\GQ.WebApi.UseCases\GQ.WebApi.UseCases.csproj" />
+    <ProjectReference Include="..\5 Infrastructure.Implementation\GQ.WebApi.DataAccess.Postgres\GQ.WebApi.DataAccess.Postgres.csproj" />
+    <ProjectReference Include="..\..\..\lib\GQ.Shared.Observability\GQ.Shared.Observability.csproj" />
+  </ItemGroup>
+
+</Project>

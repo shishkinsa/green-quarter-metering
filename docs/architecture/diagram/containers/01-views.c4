@@ -1,0 +1,6 @@
+views {
+  view containers {
+    title 'Контейнеры Зеленый квартал — Учёт электроэнергии'
+    include sampleProject.*
+  }
+}

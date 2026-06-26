@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: Зеленый квартал — Учёт электроэнергии API
+  version: 0.4.0
+  description: Канонический REST-контракт. Обновляйте синхронно с кодом WebAPI и клиента.
+
+servers:
+  - url: /api/v1
+    description: Внутренний API v1
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Проверка готовности сервиса
+      tags: [System]
+      responses:
+        '200':
+          description: Сервис доступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /examples:
+    get:
+      operationId: listExamples
+      summary: Список примеров сущностей
+      tags: [Examples]
+      responses:
+        '200':
+          description: Список
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListExamplesResponse'
+    post:
+      operationId: createExample
+      summary: Создать пример
+      tags: [Examples]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExampleRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateExampleResponse'
+        '400':
+          description: Ошибка валидации
+        '401':
+          description: Требуется аутентификация (при Auth:Enabled)
+
+  /categories:
+    get:
+      operationId: listCategories
+      summary: Список справочных категорий (read-only)
+      tags: [Categories]
+      responses:
+        '200':
+          description: Список категорий
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCategoriesResponse'
+
+  /examples/{id}:
+    get:
+      operationId: getExampleById
+      summary: Получить пример по id
+      tags: [Examples]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetExampleByIdResponse'
+        '404':
+          description: Не найдено
+    put:
+      operationId: updateExample
+      summary: Обновить пример
+      tags: [Examples]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateExampleRequest'
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateExampleResponse'
+        '400':
+          description: Ошибка валидации
+        '404':
+          description: Не найдено
+    delete:
+      operationId: deleteExample
+      summary: Удалить пример
+      tags: [Examples]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Удалено
+        '404':
+          description: Не найдено
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, service]
+      properties:
+        status:
+          type: string
+          example: ok
+        service:
+          type: string
+          example: GQ.WebApi.WebApp
+
+    ExampleItemDto:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 256
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateExampleRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 256
+
+    CreateExampleResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/ExampleItemDto'
+
+    ListExamplesResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExampleItemDto'
+
+    GetExampleByIdResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/ExampleItemDto'
+
+    UpdateExampleRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 256
+
+    UpdateExampleResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/ExampleItemDto'
+
+    CategoryDto:
+      type: object
+      required: [id, code, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+          maxLength: 64
+        name:
+          type: string
+          maxLength: 256
+
+    ListCategoriesResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryDto'

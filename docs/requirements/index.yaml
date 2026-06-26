@@ -1,0 +1,28 @@
+# Индекс требований — см. docs/README.md и manifest.yaml
+
+version: 1
+framework: docs/README.md
+manifest: manifest.yaml
+
+business:
+  goals: docs/requirements/business/goals.md
+  capabilities: docs/requirements/business/capabilities.md
+
+constraints:
+  performance: docs/requirements/constraints/performance.md
+  security: docs/requirements/constraints/security.md
+
+behavior:
+  root: openspec/specs
+  note: "Поведение — только в openspec/specs/"
+
+capabilities:
+  - id: examples
+    spec: openspec/specs/examples/spec.md
+    business: docs/requirements/business/capabilities.md#examples
+  - id: categories
+    spec: openspec/specs/categories/spec.md
+    business: docs/requirements/business/capabilities.md#categories
+  - id: auth
+    spec: openspec/specs/auth/spec.md
+    business: docs/requirements/business/capabilities.md#auth

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\1 Entities\GQ.WebApi.Entities\GQ.WebApi.Entities.csproj" />
+  </ItemGroup>
+</Project>

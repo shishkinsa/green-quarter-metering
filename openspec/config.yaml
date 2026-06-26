@@ -1,0 +1,19 @@
+schema: spec-driven
+
+context: |
+  Зеленый квартал — Учёт электроэнергии — full stack шаблон: React/TypeScript (FSD) + ASP.NET Core / .NET 10 (Clean Architecture) + PostgreSQL.
+  Подробности: openspec/project.md, docs/README.md, manifest.yaml.
+  Язык коммуникации: русский.
+  Для новых сущностей и full stack фич используй schema `full-stack`: openspec/schemas/full-stack/.
+
+rules:
+  proposal:
+    - Указывай affected capabilities, OpenAPI paths, backend и frontend слои
+    - Связывай с docs/requirements/business/ при необходимости
+    - Язык: русский
+  design:
+    - Ссылайся на ADR (docs/architecture/adr/) и layer specs; новый ADR — при смене технологии
+    - REST-контракт: docs/architecture/openapi/components/openapi.yaml
+  tasks:
+    - Для full stack фич используй чеклист из docs/process/workflows/add-entity.md
+    - Включай verify.ps1 и openspec validate --strict

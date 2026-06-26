@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\0 Utils\GQ.WebApi.Utils\GQ.WebApi.Utils.csproj" />
+    <ProjectReference Include="..\..\1 Entities\GQ.WebApi.Entities\GQ.WebApi.Entities.csproj" />
+    <ProjectReference Include="..\..\2 Infrastructure.Interfaces\GQ.WebApi.Infrastructure.Interfaces\GQ.WebApi.Infrastructure.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
