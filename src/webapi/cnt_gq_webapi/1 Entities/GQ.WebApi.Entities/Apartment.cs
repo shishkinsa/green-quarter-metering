@@ -24,17 +24,17 @@ public sealed class Apartment
 
     public static Apartment Create(Guid id, Guid buildingId, string number, int? floor)
     {
-        if (id == Guid.Empty)
+        if(id == Guid.Empty)
         {
             throw new ArgumentException("Id is required.", nameof(id));
         }
 
-        if (buildingId == Guid.Empty)
+        if(buildingId == Guid.Empty)
         {
             throw new ArgumentException("BuildingId is required.", nameof(buildingId));
         }
 
-        if (string.IsNullOrWhiteSpace(number))
+        if(string.IsNullOrWhiteSpace(number))
         {
             throw new ArgumentException("Number is required.", nameof(number));
         }
@@ -44,7 +44,7 @@ public sealed class Apartment
             Id = id,
             BuildingId = buildingId,
             Number = number.Trim(),
-            Floor = floor,
+            Floor = floor
         };
     }
 }

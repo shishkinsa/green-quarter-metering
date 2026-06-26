@@ -1,6 +1,7 @@
 views {
   view containers {
-    title 'Контейнеры Зеленый квартал — Учёт электроэнергии'
-    include sampleProject.*
+    title 'Контейнеры — Зелёный квартал, учёт электроэнергии'
+    include gq.cntSpWeb, gq.cntSpWebApi, gq.cntSpDb
+    include gq.cntSpWeb -> gq.cntSpWebApi, gq.cntSpWebApi -> gq.cntSpDb
   }
 }

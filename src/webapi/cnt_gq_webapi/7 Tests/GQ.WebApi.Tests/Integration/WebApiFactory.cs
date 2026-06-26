@@ -1,3 +1,8 @@
+using GQ.WebApi.DataAccess.Postgres.Data;
+using GQ.WebApi.DataAccess.Postgres.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
+using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -5,17 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using GQ.WebApi.DataAccess.Postgres.Data;
-using GQ.WebApi.DataAccess.Postgres.Repositories;
-using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
 
 namespace GQ.WebApi.Tests.Integration;
 
 /// <summary>
 /// Фабрика тестового хоста с InMemory БД.
 /// </summary>
-public sealed class WebApiFactory : WebApplicationFactory<Program>
+public sealed class WebApiFactory: WebApplicationFactory<Program>
 {
     private readonly string _databaseName = $"WebApiTests_{Guid.NewGuid():N}";
 
@@ -33,7 +34,7 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = string.Empty,
-                ["Database:AutoMigrate"] = "false",
+                ["Database:AutoMigrate"] = "false"
             });
         });
 
@@ -57,10 +58,10 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        var host = base.CreateHost(builder);
+        IHost host = base.CreateHost(builder);
 
-        using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        using IServiceScope scope = host.Services.CreateScope();
+        AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         IntegrationTestDatabase.Seed(db);
 
         return host;

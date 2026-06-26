@@ -1,13 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using GQ.WebApi.Entities;
 using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace GQ.WebApi.DataAccess.Postgres.Data;
 
 /// <summary>
 /// EF Core контекст PostgreSQL.
 /// </summary>
-public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options), IDbContext
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(options), IDbContext
 {
     public DbSet<Building> Buildings => Set<Building>();
 

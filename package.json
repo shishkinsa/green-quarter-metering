@@ -7,9 +7,15 @@
     "openspec:validate": "openspec validate --specs --strict --no-interactive",
     "openspec:validate:all": "openspec validate --all --strict --no-interactive",
     "openspec:list": "openspec list --specs",
+    "likec4:validate": "likec4 validate docs/architecture/diagram",
+    "likec4:gen": "likec4 gen mermaid -o docs/architecture/diagram/generated/mermaid docs/architecture/diagram && likec4 gen dot -o docs/architecture/diagram/generated/dot docs/architecture/diagram && likec4 export json -o docs/architecture/diagram/generated docs/architecture/diagram",
+    "likec4:build": "likec4 build -o docs/architecture/diagram/generated/site -t \"Зелёный квартал — C4\" docs/architecture/diagram",
+    "likec4:png": "likec4 export png --flat -o docs/architecture/diagram/generated/png docs/architecture/diagram",
+    "likec4:generate": "powershell -ExecutionPolicy Bypass -File scripts/likec4-generate.ps1",
     "verify": "powershell -ExecutionPolicy Bypass -File scripts/verify.ps1"
   },
   "devDependencies": {
-    "@fission-ai/openspec": "^1.4.1"
+    "@fission-ai/openspec": "^1.4.1",
+    "likec4": "^1.58.0"
   }
 }

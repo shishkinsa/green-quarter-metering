@@ -1,4 +1,4 @@
-// capability: examples, categories, auth
+// capability: directories
 // ADR: 0001, 0002, 0003
 
 specification {
@@ -9,11 +9,11 @@ specification {
 
 model {
   user = person 'Пользователь' {
-    description 'Оператор системы'
+    description 'Энергетик Василий; в перспективе — владелец квартиры (жилец)'
   }
 
-  sampleProject = softwareSystem 'Зеленый квартал — Учёт электроэнергии' {
-    description 'TBD: краткое описание системы и её назначения'
+  gq = softwareSystem 'Зеленый квартал — Учёт электроэнергии' {
+    description 'Учёт потребления электроэнергии в ЖК: справочники объектов, передача показаний'
 
     cntSpWeb = container 'CNT_GQ_Web' {
       technology 'React, TypeScript, Vite, Ant Design'
@@ -21,24 +21,27 @@ model {
     }
 
     cntSpWebApi = container 'CNT_GQ_WebAPI' {
-      technology 'ASP.NET Core, .NET 10'
-      description 'REST API: бизнес-логика, метаданные в PostgreSQL'
+      technology 'ASP.NET Core, .NET 8, MediatR, EF Core'
+      description 'REST API: бизнес-логика, валидация, персистентность в PostgreSQL'
     }
 
     cntSpDb = container 'CNT_GQ_DB' {
       technology 'PostgreSQL'
-      description 'Транзакционные данные приложения'
+      description 'Транзакционные данные приложения (UUID)'
+      style {
+        shape storage
+      }
     }
   }
 
-  user -> sampleProject.cntSpWeb 'Использует'
-  sampleProject.cntSpWeb -> sampleProject.cntSpWebApi 'REST /api/v1'
-  sampleProject.cntSpWebApi -> sampleProject.cntSpDb 'Читает и записывает'
+  user -> gq.cntSpWeb 'Использует'
+  gq.cntSpWeb -> gq.cntSpWebApi 'REST /api/v1'
+  gq.cntSpWebApi -> gq.cntSpDb 'Читает и записывает'
 }
 
 views {
   view context {
-    title 'Контекст Зеленый квартал — Учёт электроэнергии'
-    include user, sampleProject.*
+    title 'Контекст — Зелёный квартал, учёт электроэнергии'
+    include user, gq
   }
 }

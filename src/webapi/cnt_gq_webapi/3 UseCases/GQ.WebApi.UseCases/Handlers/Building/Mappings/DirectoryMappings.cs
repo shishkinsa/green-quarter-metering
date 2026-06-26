@@ -1,6 +1,7 @@
 using GQ.WebApi.Entities;
 using GQ.WebApi.Infrastructure.Interfaces.Repositories;
 using GQ.WebApi.UseCases.Handlers.Building.Dto;
+
 using BuildingEntity = GQ.WebApi.Entities.Building;
 using OwnerEntity = GQ.WebApi.Entities.Owner;
 

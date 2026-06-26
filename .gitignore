@@ -377,3 +377,9 @@ FodyWeavers.xsd
 _ref-greenhouse/
 _ref-gh/
 
+# LikeC4 build artifacts
+docs/architecture/diagram/dist/
+docs/architecture/diagram/generated/site/
+docs/architecture/diagram/generated/png/
+.likec4/
+

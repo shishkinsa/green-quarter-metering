@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using MediatR;
 using GQ.WebApi.UseCases.Handlers.Apartment.Commands.CreateApartment;
 using GQ.WebApi.UseCases.Handlers.Apartment.Queries.ListApartmentsWithOwners;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.UpdateBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Queries.ListBuildings;
+
+using MediatR;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace GQ.WebApi.WebApp.Controllers;
 
@@ -13,7 +15,7 @@ namespace GQ.WebApi.WebApp.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/buildings")]
-public sealed class BuildingsController(IMediator mediator) : ControllerBase
+public sealed class BuildingsController(IMediator mediator): ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ListBuildingsResponse), StatusCodes.Status200OK)]
@@ -29,7 +31,7 @@ public sealed class BuildingsController(IMediator mediator) : ControllerBase
         [FromBody] CreateBuildingRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await mediator.Send(
+        CreateBuildingResponse response = await mediator.Send(
             new CreateBuildingCommand(request.Name, request.Address),
             cancellationToken);
         return CreatedAtAction(nameof(List), response);
@@ -67,7 +69,7 @@ public sealed class BuildingsController(IMediator mediator) : ControllerBase
         [FromBody] CreateApartmentRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await mediator.Send(
+        CreateApartmentResponse response = await mediator.Send(
             new CreateApartmentCommand(buildingId, request.Number, request.Floor),
             cancellationToken);
         return CreatedAtAction(

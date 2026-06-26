@@ -1,7 +1,9 @@
 using FluentValidation;
+
 using GQ.WebApi.Infrastructure.Interfaces.Repositories;
 using GQ.WebApi.UseCases.Exceptions;
 using GQ.WebApi.UseCases.Handlers.Building.Mappings;
+
 using MediatR;
 
 namespace GQ.WebApi.UseCases.Handlers.Building.Commands.UpdateBuilding;
@@ -20,11 +22,7 @@ public sealed class UpdateBuildingCommandHandler(
         CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(command, cancellationToken);
-        var building = await repository.GetByIdAsync(command.Id, cancellationToken);
-        if (building is null)
-        {
-            throw new UseCaseNotFoundException($"Building '{command.Id}' was not found.");
-        }
+        Entities.Building building = await repository.GetByIdAsync(command.Id, cancellationToken) ?? throw new UseCaseNotFoundException($"Building '{command.Id}' was not found.");
 
         building.Update(command.Name, command.Address);
         await repository.UpdateAsync(building, cancellationToken);

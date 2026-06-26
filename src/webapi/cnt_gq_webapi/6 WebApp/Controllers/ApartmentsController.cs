@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using MediatR;
 using GQ.WebApi.UseCases.Handlers.Owner.Commands.UpsertApartmentOwner;
+
+using MediatR;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace GQ.WebApi.WebApp.Controllers;
 
@@ -9,7 +11,7 @@ namespace GQ.WebApi.WebApp.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/apartments")]
-public sealed class ApartmentsController(IMediator mediator) : ControllerBase
+public sealed class ApartmentsController(IMediator mediator): ControllerBase
 {
     [HttpPut("{apartmentId:guid}/owner")]
     [ProducesResponseType(typeof(UpsertApartmentOwnerResponse), StatusCodes.Status200OK)]

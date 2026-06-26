@@ -7,7 +7,7 @@ namespace GQ.WebApi.WebApp.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/health")]
-public sealed class HealthController : ControllerBase
+public sealed class HealthController: ControllerBase
 {
     /// <summary>
     /// Возвращает статус приложения (дублирует /health для REST-контракта OpenAPI).

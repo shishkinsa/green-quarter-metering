@@ -1,22 +1,25 @@
 using System.Diagnostics;
+
 using FluentValidation;
+
+using GQ.WebApi.UseCases.Exceptions;
+
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using GQ.WebApi.UseCases.Exceptions;
 
 namespace GQ.WebApi.WebApp.ExceptionHandlers;
 
 /// <summary>
 /// Глобальный обработчик исключений API (Problem Details).
 /// </summary>
-public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : IExceptionHandler
+public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger): IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
-        var (statusCode, title) = exception switch
+        (int statusCode, string title) = exception switch
         {
             ValidationException => (StatusCodes.Status400BadRequest, "Validation failed"),
             UseCaseNotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
@@ -25,7 +28,7 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : I
             _ => (StatusCodes.Status500InternalServerError, "Internal server error"),
         };
 
-        if (statusCode >= StatusCodes.Status500InternalServerError)
+        if(statusCode >= StatusCodes.Status500InternalServerError)
         {
             logger.LogError(exception, "Unhandled exception");
         }
@@ -35,12 +38,12 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : I
             Status = statusCode,
             Title = title,
             Detail = exception.Message,
-            Instance = httpContext.Request.Path,
+            Instance = httpContext.Request.Path
         };
 
         problem.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
 
-        if (exception is ValidationException validationException)
+        if(exception is ValidationException validationException)
         {
             problem.Extensions["errors"] = validationException.Errors
                 .GroupBy(e => e.PropertyName)

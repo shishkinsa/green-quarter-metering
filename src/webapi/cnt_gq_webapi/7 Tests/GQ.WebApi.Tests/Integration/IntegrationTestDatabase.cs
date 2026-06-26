@@ -1,5 +1,6 @@
 using GQ.WebApi.DataAccess.Postgres.Data;
 using GQ.WebApi.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace GQ.WebApi.Tests.Integration;
@@ -11,7 +12,7 @@ internal static class IntegrationTestDatabase
 {
     internal static void Seed(AppDbContext dbContext)
     {
-        if (dbContext.Buildings.Any())
+        if(dbContext.Buildings.Any())
         {
             return;
         }

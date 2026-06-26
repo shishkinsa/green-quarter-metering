@@ -1,9 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using GQ.WebApi.DataAccess.Postgres.Data;
 using GQ.WebApi.DataAccess.Postgres.Repositories;
 using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
 using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GQ.WebApi.DataAccess.Postgres.DependencyInjection;
 

@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.monitoring.yml" />
     <File Path="docker-compose.yml" />
+    <File Path=".editorconfig" />
     <File Path="src/.editorconfig" />
     <File Path="src/Directory.Build.props" />
     <File Path="src/Directory.Packages.props" />

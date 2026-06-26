@@ -1,15 +1,17 @@
-using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+
 using GQ.Shared.Observability.Extensions;
 using GQ.WebApi.DataAccess.Postgres.Data;
 using GQ.WebApi.DataAccess.Postgres.DependencyInjection;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding.Validators;
 using GQ.WebApi.WebApp.ExceptionHandlers;
-using FluentValidation;
 
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 var serviceName = "GQ.WebApi.WebApp";
-var serviceVersion = typeof(Program).Assembly.GetName().Version?.ToString() ?? "0.1.0";
+string serviceVersion = typeof(Program).Assembly.GetName().Version?.ToString() ?? "0.1.0";
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
@@ -17,8 +19,8 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (!string.IsNullOrWhiteSpace(connectionString))
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if(!string.IsNullOrWhiteSpace(connectionString))
 {
     builder.Services.AddPostgresDataAccess(connectionString);
 }
@@ -32,14 +34,14 @@ builder.Services.AddGQObservability(
     serviceName,
     serviceVersion);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-if (builder.Configuration.GetValue<bool>("Database:AutoMigrate")
+if(builder.Configuration.GetValue<bool>("Database:AutoMigrate")
     && !string.IsNullOrWhiteSpace(connectionString))
 {
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (db.Database.IsRelational())
+    using IServiceScope scope = app.Services.CreateScope();
+    AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if(db.Database.IsRelational())
     {
         db.Database.Migrate();
     }
@@ -47,7 +49,7 @@ if (builder.Configuration.GetValue<bool>("Database:AutoMigrate")
 
 app.UseExceptionHandler();
 
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

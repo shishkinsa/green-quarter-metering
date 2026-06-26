@@ -4,5 +4,15 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <NuGetAudit>false</NuGetAudit>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Roslynator.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 </Project>

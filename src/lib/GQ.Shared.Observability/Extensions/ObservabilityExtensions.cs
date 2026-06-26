@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -23,8 +24,8 @@ public static class ObservabilityExtensions
         string serviceName,
         string serviceVersion)
     {
-        var otlpEndpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://localhost:4317";
-        var resourceBuilder = ResourceBuilder.CreateDefault()
+        string otlpEndpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://localhost:4317";
+        ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault()
             .AddService(serviceName: serviceName, serviceVersion: serviceVersion);
 
         logging.AddOpenTelemetry(options =>

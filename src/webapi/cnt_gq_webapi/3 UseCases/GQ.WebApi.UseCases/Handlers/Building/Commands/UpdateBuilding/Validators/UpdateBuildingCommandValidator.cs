@@ -3,7 +3,7 @@ using FluentValidation;
 namespace GQ.WebApi.UseCases.Handlers.Building.Commands.UpdateBuilding.Validators;
 
 /// <summary>Правила валидации команды обновления дома.</summary>
-public sealed class UpdateBuildingCommandValidator : AbstractValidator<UpdateBuildingCommand>
+public sealed class UpdateBuildingCommandValidator: AbstractValidator<UpdateBuildingCommand>
 {
     public UpdateBuildingCommandValidator()
     {

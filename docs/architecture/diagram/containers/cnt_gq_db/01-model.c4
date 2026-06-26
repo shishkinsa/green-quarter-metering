@@ -1,3 +1,41 @@
-// Контейнер CNT_GQ_DB — схема данных
+// CNT_GQ_DB — схема справочников (capability: directories)
+// Канон полей: docs/architecture/diagram/data/cnt_gq_db/database.md
 
-// Связанный документ: docs/architecture/diagram/data/cnt_gq_db/database.md
+specification {
+  element component
+}
+
+model {
+  extend gq.cntSpDb {
+    tblBuildings = component 'buildings' {
+      description 'Id (uuid PK), Name, Address'
+      style {
+        shape storage
+      }
+    }
+
+    tblApartments = component 'apartments' {
+      description 'Id (uuid PK), BuildingId FK, Number, Floor; UNIQUE(BuildingId, Number)'
+      style {
+        shape storage
+      }
+    }
+
+    tblOwners = component 'owners' {
+      description 'Id (uuid PK), ApartmentId FK UNIQUE, FullName, Phone'
+      style {
+        shape storage
+      }
+    }
+
+    tblBuildings -> tblApartments '1:N'
+    tblApartments -> tblOwners '1:1'
+  }
+}
+
+views {
+  view db_directories {
+    title 'CNT_GQ_DB — ERD справочников'
+    include gq.cntSpDb.*
+  }
+}

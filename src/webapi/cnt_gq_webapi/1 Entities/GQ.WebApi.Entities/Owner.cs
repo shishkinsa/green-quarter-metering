@@ -19,12 +19,12 @@ public sealed class Owner
 
     public static Owner Create(Guid apartmentId, string fullName, string? phone)
     {
-        if (apartmentId == Guid.Empty)
+        if(apartmentId == Guid.Empty)
         {
             throw new ArgumentException("ApartmentId is required.", nameof(apartmentId));
         }
 
-        if (string.IsNullOrWhiteSpace(fullName))
+        if(string.IsNullOrWhiteSpace(fullName))
         {
             throw new ArgumentException("FullName is required.", nameof(fullName));
         }
@@ -34,13 +34,13 @@ public sealed class Owner
             Id = Guid.NewGuid(),
             ApartmentId = apartmentId,
             FullName = fullName.Trim(),
-            Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim(),
+            Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim()
         };
     }
 
     public void Update(string fullName, string? phone)
     {
-        if (string.IsNullOrWhiteSpace(fullName))
+        if(string.IsNullOrWhiteSpace(fullName))
         {
             throw new ArgumentException("FullName is required.", nameof(fullName));
         }

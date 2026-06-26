@@ -4,18 +4,18 @@ using System.Net.Http.Json;
 namespace GQ.WebApi.Tests.Integration;
 
 [Collection("api")]
-public sealed class BuildingsEndpointTests(WebApiFactory factory) : IClassFixture<WebApiFactory>
+public sealed class BuildingsEndpointTests(WebApiFactory factory): IClassFixture<WebApiFactory>
 {
     private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task ListBuildings_ReturnsSeededBuilding()
     {
-        var response = await _client.GetAsync("/api/v1/buildings");
+        HttpResponseMessage response = await _client.GetAsync("/api/v1/buildings");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var payload = await response.Content.ReadFromJsonAsync<ListBuildingsPayload>();
+        ListBuildingsPayload? payload = await response.Content.ReadFromJsonAsync<ListBuildingsPayload>();
         Assert.NotNull(payload);
         Assert.Contains(payload!.Items, x => x.Name == "Корпус 1");
     }
@@ -24,28 +24,28 @@ public sealed class BuildingsEndpointTests(WebApiFactory factory) : IClassFixtur
     public async Task ListApartmentsWithOwners_ReturnsSeededData()
     {
         var buildingId = Guid.Parse("b0000001-0000-0000-0000-000000000001");
-        var response = await _client.GetAsync($"/api/v1/buildings/{buildingId}/apartments");
+        HttpResponseMessage response = await _client.GetAsync($"/api/v1/buildings/{buildingId}/apartments");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var payload = await response.Content.ReadFromJsonAsync<ListApartmentsPayload>();
+        ListApartmentsPayload? payload = await response.Content.ReadFromJsonAsync<ListApartmentsPayload>();
         Assert.NotNull(payload);
         Assert.Equal(2, payload!.Items.Count);
         Assert.Contains(payload.Items, x => x.Number == "12" && x.OwnerFullName == "Иванов Иван Иванович");
-        Assert.Contains(payload.Items, x => x.Number == "15" && x.OwnerFullName == null);
+        Assert.Contains(payload.Items, x => x.Number == "15" && x.OwnerFullName is null);
     }
 
     [Fact]
     public async Task CreateBuilding_AndApartment_Works()
     {
-        var createBuilding = await _client.PostAsJsonAsync(
+        HttpResponseMessage createBuilding = await _client.PostAsJsonAsync(
             "/api/v1/buildings",
             new { name = "Корпус 2", address = "ул. Садовая, 2" });
         Assert.Equal(HttpStatusCode.Created, createBuilding.StatusCode);
-        var building = await createBuilding.Content.ReadFromJsonAsync<CreateBuildingPayload>();
+        CreateBuildingPayload? building = await createBuilding.Content.ReadFromJsonAsync<CreateBuildingPayload>();
         Assert.NotNull(building);
 
-        var createApartment = await _client.PostAsJsonAsync(
+        HttpResponseMessage createApartment = await _client.PostAsJsonAsync(
             $"/api/v1/buildings/{building!.Item.Id}/apartments",
             new { number = "1", floor = 1 });
         Assert.Equal(HttpStatusCode.Created, createApartment.StatusCode);
@@ -54,7 +54,7 @@ public sealed class BuildingsEndpointTests(WebApiFactory factory) : IClassFixtur
     [Fact]
     public async Task ListApartments_WhenBuildingNotFound_Returns404()
     {
-        var response = await _client.GetAsync($"/api/v1/buildings/{Guid.NewGuid()}/apartments");
+        HttpResponseMessage response = await _client.GetAsync($"/api/v1/buildings/{Guid.NewGuid()}/apartments");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 

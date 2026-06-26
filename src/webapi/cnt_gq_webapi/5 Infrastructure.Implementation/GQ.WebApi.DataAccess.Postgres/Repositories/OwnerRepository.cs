@@ -1,14 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using GQ.WebApi.DataAccess.Postgres.Data;
 using GQ.WebApi.Entities;
 using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace GQ.WebApi.DataAccess.Postgres.Repositories;
 
 /// <summary>
 /// Реализация <see cref="IOwnerRepository"/> на EF Core и PostgreSQL.
 /// </summary>
-public sealed class OwnerRepository(AppDbContext dbContext) : IOwnerRepository
+public sealed class OwnerRepository(AppDbContext dbContext): IOwnerRepository
 {
     public Task<Owner?> GetByApartmentIdAsync(Guid apartmentId, CancellationToken cancellationToken = default)
     {

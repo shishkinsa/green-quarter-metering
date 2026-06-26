@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GQ.WebApi.DataAccess.Postgres.Migrations;
@@ -17,9 +18,9 @@ internal static class DirectoryDemoData
     {
         var sql = new StringBuilder();
 
-        for (var buildingIndex = 1; buildingIndex <= BuildingCount; buildingIndex++)
+        for(int buildingIndex = 1; buildingIndex <= BuildingCount; buildingIndex++)
         {
-            var buildingId = CreateBuildingId(buildingIndex);
+            Guid buildingId = CreateBuildingId(buildingIndex);
             AppendInsert(
                 sql,
                 table: "buildings",
@@ -27,10 +28,10 @@ internal static class DirectoryDemoData
                 columns: "\"Id\", \"Name\", \"Address\"",
                 values: $"'{buildingId}', '{Escape($"Корпус {buildingIndex}")}', '{Escape($"ул. Зелёная, {buildingIndex}")}'");
 
-            for (var apartmentIndex = 1; apartmentIndex <= ApartmentsPerBuilding; apartmentIndex++)
+            for(int apartmentIndex = 1; apartmentIndex <= ApartmentsPerBuilding; apartmentIndex++)
             {
-                var apartmentId = CreateApartmentId(buildingIndex, apartmentIndex);
-                var floor = (apartmentIndex - 1) / 4 + 1;
+                Guid apartmentId = CreateApartmentId(buildingIndex, apartmentIndex);
+                int floor = ((apartmentIndex - 1) / 4) + 1;
                 AppendInsert(
                     sql,
                     table: "apartments",
@@ -49,9 +50,9 @@ internal static class DirectoryDemoData
     {
         var sql = new StringBuilder();
 
-        for (var buildingIndex = 1; buildingIndex <= BuildingCount; buildingIndex++)
+        for(int buildingIndex = 1; buildingIndex <= BuildingCount; buildingIndex++)
         {
-            for (var apartmentIndex = 1; apartmentIndex <= ApartmentsPerBuilding; apartmentIndex++)
+            for(int apartmentIndex = 1; apartmentIndex <= ApartmentsPerBuilding; apartmentIndex++)
             {
                 AppendOwnerInsert(
                     sql,
@@ -66,11 +67,11 @@ internal static class DirectoryDemoData
 
     internal static void DeleteFilledOwners(MigrationBuilder migrationBuilder)
     {
-        for (var buildingIndex = BuildingCount; buildingIndex >= 1; buildingIndex--)
+        for(int buildingIndex = BuildingCount; buildingIndex >= 1; buildingIndex--)
         {
-            for (var apartmentIndex = ApartmentsPerBuilding; apartmentIndex >= 1; apartmentIndex--)
+            for(int apartmentIndex = ApartmentsPerBuilding; apartmentIndex >= 1; apartmentIndex--)
             {
-                if (apartmentIndex % 3 == 1)
+                if(apartmentIndex % 3 == 1)
                 {
                     continue;
                 }
@@ -85,9 +86,9 @@ internal static class DirectoryDemoData
 
     internal static void Delete(MigrationBuilder migrationBuilder)
     {
-        for (var buildingIndex = BuildingCount; buildingIndex >= 1; buildingIndex--)
+        for(int buildingIndex = BuildingCount; buildingIndex >= 1; buildingIndex--)
         {
-            for (var apartmentIndex = ApartmentsPerBuilding; apartmentIndex >= 1; apartmentIndex--)
+            for(int apartmentIndex = ApartmentsPerBuilding; apartmentIndex >= 1; apartmentIndex--)
             {
                 migrationBuilder.DeleteData(
                     table: "owners",
@@ -113,8 +114,8 @@ internal static class DirectoryDemoData
         int apartmentIndex,
         Guid apartmentId)
     {
-        var ownerId = CreateOwnerId(buildingIndex, apartmentIndex);
-        var phone = FormatOwnerPhone(buildingIndex, apartmentIndex);
+        Guid ownerId = CreateOwnerId(buildingIndex, apartmentIndex);
+        string phone = FormatOwnerPhone(buildingIndex, apartmentIndex);
         AppendInsert(
             sql,
             table: "owners",
@@ -144,7 +145,7 @@ internal static class DirectoryDemoData
 
     private static string FormatApartmentNumber(int floor, int apartmentIndex)
     {
-        return $"{floor}{apartmentIndex % 4 + 1:D2}";
+        return $"{floor}{(apartmentIndex % 4) + 1:D2}";
     }
 
     private static string FormatOwnerName(int buildingIndex, int apartmentIndex)
@@ -169,11 +170,11 @@ internal static class DirectoryDemoData
 
     private static Guid CreateApartmentId(int buildingIndex, int apartmentIndex)
     {
-        return Guid.Parse($"c0000001-0000-0000-0000-{(buildingIndex * 1000L + apartmentIndex):D12}", CultureInfo.InvariantCulture);
+        return Guid.Parse($"c0000001-0000-0000-0000-{((buildingIndex * 1000L) + apartmentIndex):D12}", CultureInfo.InvariantCulture);
     }
 
     private static Guid CreateOwnerId(int buildingIndex, int apartmentIndex)
     {
-        return Guid.Parse($"d0000001-0000-0000-0000-{(buildingIndex * 1000L + apartmentIndex):D12}", CultureInfo.InvariantCulture);
+        return Guid.Parse($"d0000001-0000-0000-0000-{((buildingIndex * 1000L) + apartmentIndex):D12}", CultureInfo.InvariantCulture);
     }
 }

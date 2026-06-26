@@ -69,7 +69,8 @@
 
 ```powershell
 .\scripts\verify.ps1
-npx likec4 validate docs/architecture/diagram
+npm run likec4:validate
+npm run likec4:generate   # mermaid, dot, json, site
 ```
 
 ## `public/`

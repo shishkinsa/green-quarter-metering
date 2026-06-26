@@ -22,12 +22,12 @@ public sealed class Building
 
     public static Building Create(Guid id, string name, string? address)
     {
-        if (id == Guid.Empty)
+        if(id == Guid.Empty)
         {
             throw new ArgumentException("Id is required.", nameof(id));
         }
 
-        if (string.IsNullOrWhiteSpace(name))
+        if(string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentException("Name is required.", nameof(name));
         }
@@ -36,13 +36,13 @@ public sealed class Building
         {
             Id = id,
             Name = name.Trim(),
-            Address = string.IsNullOrWhiteSpace(address) ? null : address.Trim(),
+            Address = string.IsNullOrWhiteSpace(address) ? null : address.Trim()
         };
     }
 
     public void Update(string name, string? address)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if(string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentException("Name is required.", nameof(name));
         }

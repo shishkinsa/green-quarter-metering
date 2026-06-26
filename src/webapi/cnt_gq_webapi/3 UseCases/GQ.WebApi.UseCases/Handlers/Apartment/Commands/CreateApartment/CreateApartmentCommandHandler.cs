@@ -1,10 +1,13 @@
 using FluentValidation;
-using ApartmentEntity = GQ.WebApi.Entities.Apartment;
+
 using GQ.WebApi.Entities;
 using GQ.WebApi.Infrastructure.Interfaces.Repositories;
 using GQ.WebApi.UseCases.Exceptions;
 using GQ.WebApi.UseCases.Handlers.Building.Dto;
+
 using MediatR;
+
+using ApartmentEntity = GQ.WebApi.Entities.Apartment;
 
 namespace GQ.WebApi.UseCases.Handlers.Apartment.Commands.CreateApartment;
 
@@ -25,13 +28,9 @@ public sealed class CreateApartmentCommandHandler(
     {
         await validator.ValidateAndThrowAsync(command, cancellationToken);
 
-        var building = await buildingRepository.GetByIdAsync(command.BuildingId, cancellationToken);
-        if (building is null)
-        {
-            throw new UseCaseNotFoundException($"Building '{command.BuildingId}' was not found.");
-        }
+        Entities.Building building = await buildingRepository.GetByIdAsync(command.BuildingId, cancellationToken) ?? throw new UseCaseNotFoundException($"Building '{command.BuildingId}' was not found.");
 
-        if (await apartmentRepository.ExistsByBuildingAndNumberAsync(
+        if(await apartmentRepository.ExistsByBuildingAndNumberAsync(
                 command.BuildingId,
                 command.Number,
                 null,
@@ -41,7 +40,7 @@ public sealed class CreateApartmentCommandHandler(
                 $"Apartment number '{command.Number}' already exists in building '{command.BuildingId}'.");
         }
 
-        var apartment = ApartmentEntity.Create(command.BuildingId, command.Number, command.Floor);
+        ApartmentEntity apartment = ApartmentEntity.Create(command.BuildingId, command.Number, command.Floor);
         await apartmentRepository.AddAsync(apartment, cancellationToken);
 
         var item = new ApartmentWithOwnerDto(

@@ -1,4 +1,5 @@
 using GQ.WebApi.UseCases.Handlers.Building.Dto;
+
 using MediatR;
 
 namespace GQ.WebApi.UseCases.Handlers.Owner.Commands.UpsertApartmentOwner;

@@ -1,14 +1,15 @@
-using Microsoft.EntityFrameworkCore;
 using GQ.WebApi.DataAccess.Postgres.Data;
 using GQ.WebApi.Entities;
 using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace GQ.WebApi.DataAccess.Postgres.Repositories;
 
 /// <summary>
 /// Реализация <see cref="IApartmentRepository"/> на EF Core и PostgreSQL.
 /// </summary>
-public sealed class ApartmentRepository(AppDbContext dbContext) : IApartmentRepository
+public sealed class ApartmentRepository(AppDbContext dbContext): IApartmentRepository
 {
     public async Task<IReadOnlyList<ApartmentWithOwnerReadModel>> ListByBuildingWithOwnersAsync(
         Guid buildingId,
@@ -45,7 +46,7 @@ public sealed class ApartmentRepository(AppDbContext dbContext) : IApartmentRepo
         Guid? excludeApartmentId,
         CancellationToken cancellationToken = default)
     {
-        var normalized = number.Trim();
+        string normalized = number.Trim();
         return dbContext.Apartments.AnyAsync(
             x => x.BuildingId == buildingId
                  && x.Number == normalized
