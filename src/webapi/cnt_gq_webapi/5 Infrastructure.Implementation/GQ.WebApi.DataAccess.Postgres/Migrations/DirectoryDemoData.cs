@@ -36,23 +36,51 @@ internal static class DirectoryDemoData
                     table: "apartments",
                     conflictColumn: "\"Id\"",
                     columns: "\"Id\", \"BuildingId\", \"Number\", \"Floor\"",
-                    values: $"'{apartmentId}', '{buildingId}', '{Escape(apartmentIndex.ToString(CultureInfo.InvariantCulture))}', {floor}");
+                    values: $"'{apartmentId}', '{buildingId}', '{Escape(FormatApartmentNumber(floor, apartmentIndex))}', {floor}");
 
-                if (apartmentIndex % 3 == 1)
-                {
-                    var ownerId = CreateOwnerId(buildingIndex, apartmentIndex);
-                    var phone = $"+7900{buildingIndex:D2}{apartmentIndex:D6}"[..12];
-                    AppendInsert(
-                        sql,
-                        table: "owners",
-                        conflictColumn: "\"ApartmentId\"",
-                        columns: "\"Id\", \"ApartmentId\", \"FullName\", \"Phone\"",
-                        values: $"'{ownerId}', '{apartmentId}', '{Escape($"Житель {buildingIndex}-{apartmentIndex}")}', '{Escape(phone)}'");
-                }
+                AppendOwnerInsert(sql, buildingIndex, apartmentIndex, apartmentId);
             }
         }
 
         migrationBuilder.Sql(sql.ToString());
+    }
+
+    internal static void FillMissingOwners(MigrationBuilder migrationBuilder)
+    {
+        var sql = new StringBuilder();
+
+        for (var buildingIndex = 1; buildingIndex <= BuildingCount; buildingIndex++)
+        {
+            for (var apartmentIndex = 1; apartmentIndex <= ApartmentsPerBuilding; apartmentIndex++)
+            {
+                AppendOwnerInsert(
+                    sql,
+                    buildingIndex,
+                    apartmentIndex,
+                    CreateApartmentId(buildingIndex, apartmentIndex));
+            }
+        }
+
+        migrationBuilder.Sql(sql.ToString());
+    }
+
+    internal static void DeleteFilledOwners(MigrationBuilder migrationBuilder)
+    {
+        for (var buildingIndex = BuildingCount; buildingIndex >= 1; buildingIndex--)
+        {
+            for (var apartmentIndex = ApartmentsPerBuilding; apartmentIndex >= 1; apartmentIndex--)
+            {
+                if (apartmentIndex % 3 == 1)
+                {
+                    continue;
+                }
+
+                migrationBuilder.DeleteData(
+                    table: "owners",
+                    keyColumn: "Id",
+                    keyValue: CreateOwnerId(buildingIndex, apartmentIndex));
+            }
+        }
     }
 
     internal static void Delete(MigrationBuilder migrationBuilder)
@@ -61,13 +89,10 @@ internal static class DirectoryDemoData
         {
             for (var apartmentIndex = ApartmentsPerBuilding; apartmentIndex >= 1; apartmentIndex--)
             {
-                if (apartmentIndex % 3 == 1)
-                {
-                    migrationBuilder.DeleteData(
-                        table: "owners",
-                        keyColumn: "Id",
-                        keyValue: CreateOwnerId(buildingIndex, apartmentIndex));
-                }
+                migrationBuilder.DeleteData(
+                    table: "owners",
+                    keyColumn: "Id",
+                    keyValue: CreateOwnerId(buildingIndex, apartmentIndex));
 
                 migrationBuilder.DeleteData(
                     table: "apartments",
@@ -80,6 +105,22 @@ internal static class DirectoryDemoData
                 keyColumn: "Id",
                 keyValue: CreateBuildingId(buildingIndex));
         }
+    }
+
+    private static void AppendOwnerInsert(
+        StringBuilder sql,
+        int buildingIndex,
+        int apartmentIndex,
+        Guid apartmentId)
+    {
+        var ownerId = CreateOwnerId(buildingIndex, apartmentIndex);
+        var phone = FormatOwnerPhone(buildingIndex, apartmentIndex);
+        AppendInsert(
+            sql,
+            table: "owners",
+            conflictColumn: "\"ApartmentId\"",
+            columns: "\"Id\", \"ApartmentId\", \"FullName\", \"Phone\"",
+            values: $"'{ownerId}', '{apartmentId}', '{Escape(FormatOwnerName(buildingIndex, apartmentIndex))}', '{Escape(phone)}'");
     }
 
     private static void AppendInsert(
@@ -101,14 +142,38 @@ internal static class DirectoryDemoData
             .AppendLine();
     }
 
-    private static string Escape(string value) => value.Replace("'", "''", StringComparison.Ordinal);
+    private static string FormatApartmentNumber(int floor, int apartmentIndex)
+    {
+        return $"{floor}{apartmentIndex % 4 + 1:D2}";
+    }
 
-    private static Guid CreateBuildingId(int buildingIndex) =>
-        Guid.Parse($"b0000001-0000-0000-0000-{buildingIndex:D12}", CultureInfo.InvariantCulture);
+    private static string FormatOwnerName(int buildingIndex, int apartmentIndex)
+    {
+        return $"Житель {buildingIndex}-{apartmentIndex}";
+    }
 
-    private static Guid CreateApartmentId(int buildingIndex, int apartmentIndex) =>
-        Guid.Parse($"c0000001-0000-0000-0000-{(buildingIndex * 1000L + apartmentIndex):D12}", CultureInfo.InvariantCulture);
+    private static string FormatOwnerPhone(int buildingIndex, int apartmentIndex)
+    {
+        return $"+7900{buildingIndex:D2}{apartmentIndex:D6}"[..12];
+    }
 
-    private static Guid CreateOwnerId(int buildingIndex, int apartmentIndex) =>
-        Guid.Parse($"d0000001-0000-0000-0000-{(buildingIndex * 1000L + apartmentIndex):D12}", CultureInfo.InvariantCulture);
+    private static string Escape(string value)
+    {
+        return value.Replace("'", "''", StringComparison.Ordinal);
+    }
+
+    private static Guid CreateBuildingId(int buildingIndex)
+    {
+        return Guid.Parse($"b0000001-0000-0000-0000-{buildingIndex:D12}", CultureInfo.InvariantCulture);
+    }
+
+    private static Guid CreateApartmentId(int buildingIndex, int apartmentIndex)
+    {
+        return Guid.Parse($"c0000001-0000-0000-0000-{(buildingIndex * 1000L + apartmentIndex):D12}", CultureInfo.InvariantCulture);
+    }
+
+    private static Guid CreateOwnerId(int buildingIndex, int apartmentIndex)
+    {
+        return Guid.Parse($"d0000001-0000-0000-0000-{(buildingIndex * 1000L + apartmentIndex):D12}", CultureInfo.InvariantCulture);
+    }
 }

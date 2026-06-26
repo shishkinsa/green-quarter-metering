@@ -8,6 +8,10 @@ using OwnerEntity = GQ.WebApi.Entities.Owner;
 
 namespace GQ.WebApi.UseCases.Handlers.Owner.Commands.UpsertApartmentOwner;
 
+/// <summary>
+/// Назначает владельца квартиры или обновляет его контактные данные.
+/// </summary>
+/// <exception cref="UseCaseNotFoundException">Квартира не найдена.</exception>
 public sealed class UpsertApartmentOwnerCommandHandler(
     IApartmentRepository apartmentRepository,
     IOwnerRepository ownerRepository,

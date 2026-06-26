@@ -17,8 +17,10 @@ public sealed class BuildingsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(ListBuildingsResponse), StatusCodes.Status200OK)]
-    public Task<ListBuildingsResponse> List(CancellationToken cancellationToken) =>
-        mediator.Send(new ListBuildingsQuery(), cancellationToken);
+    public Task<ListBuildingsResponse> List(CancellationToken cancellationToken)
+    {
+        return mediator.Send(new ListBuildingsQuery(), cancellationToken);
+    }
 
     [HttpPost]
     [ProducesResponseType(typeof(CreateBuildingResponse), StatusCodes.Status201Created)]
@@ -40,16 +42,20 @@ public sealed class BuildingsController(IMediator mediator) : ControllerBase
     public Task<UpdateBuildingResponse> Update(
         Guid id,
         [FromBody] UpdateBuildingRequest request,
-        CancellationToken cancellationToken) =>
-        mediator.Send(new UpdateBuildingCommand(id, request.Name, request.Address), cancellationToken);
+        CancellationToken cancellationToken)
+    {
+        return mediator.Send(new UpdateBuildingCommand(id, request.Name, request.Address), cancellationToken);
+    }
 
     [HttpGet("{buildingId:guid}/apartments")]
     [ProducesResponseType(typeof(ListApartmentsWithOwnersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<ListApartmentsWithOwnersResponse> ListApartments(
         Guid buildingId,
-        CancellationToken cancellationToken) =>
-        mediator.Send(new ListApartmentsWithOwnersQuery(buildingId), cancellationToken);
+        CancellationToken cancellationToken)
+    {
+        return mediator.Send(new ListApartmentsWithOwnersQuery(buildingId), cancellationToken);
+    }
 
     [HttpPost("{buildingId:guid}/apartments")]
     [ProducesResponseType(typeof(CreateApartmentResponse), StatusCodes.Status201Created)]
@@ -71,8 +77,11 @@ public sealed class BuildingsController(IMediator mediator) : ControllerBase
     }
 }
 
+/// <summary>Тело запроса создания дома.</summary>
 public sealed record CreateBuildingRequest(string Name, string? Address);
 
+/// <summary>Тело запроса обновления дома.</summary>
 public sealed record UpdateBuildingRequest(string Name, string? Address);
 
+/// <summary>Тело запроса создания квартиры.</summary>
 public sealed record CreateApartmentRequest(string Number, int? Floor);

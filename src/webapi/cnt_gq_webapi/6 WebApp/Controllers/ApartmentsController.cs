@@ -18,10 +18,13 @@ public sealed class ApartmentsController(IMediator mediator) : ControllerBase
     public Task<UpsertApartmentOwnerResponse> UpsertOwner(
         Guid apartmentId,
         [FromBody] UpsertApartmentOwnerRequest request,
-        CancellationToken cancellationToken) =>
-        mediator.Send(
+        CancellationToken cancellationToken)
+    {
+        return mediator.Send(
             new UpsertApartmentOwnerCommand(apartmentId, request.FullName, request.Phone),
             cancellationToken);
+    }
 }
 
+/// <summary>Тело запроса назначения или обновления владельца квартиры.</summary>
 public sealed record UpsertApartmentOwnerRequest(string FullName, string? Phone);

@@ -8,11 +8,14 @@ namespace GQ.WebApi.UseCases.Handlers.Building.Mappings;
 
 internal static class DirectoryMappings
 {
-    internal static BuildingDto ToDto(BuildingEntity building) =>
-        new(building.Id, building.Name, building.Address);
+    internal static BuildingDto ToDto(BuildingEntity building)
+    {
+        return new(building.Id, building.Name, building.Address);
+    }
 
-    internal static ApartmentWithOwnerDto ToDto(ApartmentWithOwnerReadModel model) =>
-        new(
+    internal static ApartmentWithOwnerDto ToDto(ApartmentWithOwnerReadModel model)
+    {
+        return new(
             model.Id,
             model.BuildingId,
             model.Number,
@@ -20,7 +23,10 @@ internal static class DirectoryMappings
             model.OwnerId,
             model.OwnerFullName,
             model.OwnerPhone);
+    }
 
-    internal static OwnerDto ToDto(OwnerEntity owner) =>
-        new(owner.Id, owner.ApartmentId, owner.FullName, owner.Phone);
+    internal static OwnerDto ToDto(OwnerEntity owner)
+    {
+        return new(owner.Id, owner.ApartmentId, owner.FullName, owner.Phone);
+    }
 }

@@ -4,6 +4,7 @@ using MediatR;
 
 namespace GQ.WebApi.UseCases.Handlers.Building.Queries.ListBuildings;
 
+/// <summary>Возвращает список всех домов справочника.</summary>
 public sealed class ListBuildingsQueryHandler(IBuildingRepository repository)
     : IRequestHandler<ListBuildingsQuery, ListBuildingsResponse>
 {

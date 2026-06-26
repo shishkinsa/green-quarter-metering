@@ -677,6 +677,57 @@ export function WeatherPage() {
 }
 ```
 
+### Документирование backend (C#, cnt_gq_webapi)
+
+Правила относятся к контейнеру **`cnt_gq_webapi`** и слоям из [backend.md](../architecture/specs/backend.md). Именование типов и файлов — в [csharp.md](naming/csharp.md).
+
+**Язык.** Описания в `///` — **на русском**. Имена в `<param>` и `<paramref>` совпадают с сигнатурой.
+
+**Где документировать (обязательно для нового и изменяемого публичного API):**
+
+| Слой / место | Что описывать |
+|--------------|----------------|
+| **`1 Entities`** | Сущности и value objects: роль в домене; фабричные методы `Create` — инварианты и исключения |
+| **`2 Infrastructure.Interfaces`** | Интерфейсы репозиториев и контракты доступа к данным; read-модели при неочевидной семантике полей |
+| **`3 UseCases` — Commands/Queries** | Назначение сценария; типы ответа — кратко, если имя неочевидно |
+| **`3 UseCases` — Handlers** | Что делает обработчик; `<exception>` для `UseCaseNotFoundException`, `UseCaseConflictException` и доменных ошибок |
+| **`3 UseCases` — Validators`** | Правила валидации сценария (одна строка) |
+| **`3 UseCases` — Dto`** | DTO ответа API: назначение записи |
+| **`5 Infrastructure.Implementation`** | Реализации репозиториев, `AppDbContext`, DI-расширения (`Add*`) |
+| **`6 WebApp` — Controllers** | Роль контроллера; при необходимости — действия с неочевидным контрактом |
+| **`6 WebApp` — ExceptionHandlers, Authentication`** | Политика преобразования ошибок и аутентификации |
+
+**Что не дублировать:** очевидное из имён и типов C#; `internal` типы и методы; конструкторы без логики; однострочные делегаты в контроллерах; сгенерированные миграции EF.
+
+**Формат:** XML Documentation Comments (`///`), теги по необходимости: `<summary>`, `<param>`, `<returns>`, `<exception>`, `<remarks>` для нетривиальной бизнес-логики.
+
+```csharp
+/// <summary>
+/// Создаёт дом в справочнике ЖК.
+/// </summary>
+public sealed class CreateBuildingCommandHandler : IRequestHandler<CreateBuildingCommand, CreateBuildingResponse>
+{
+    /// <inheritdoc />
+    public async Task<CreateBuildingResponse> Handle(
+        CreateBuildingCommand command,
+        CancellationToken cancellationToken)
+    {
+        // ...
+    }
+}
+```
+
+```csharp
+/// <summary>
+/// Контракт чтения и записи сущностей <see cref="Building"/>.
+/// </summary>
+public interface IBuildingRepository
+{
+    /// <summary>Возвращает все дома, отсортированные по наименованию.</summary>
+    Task<IReadOnlyList<Building>> ListAsync(CancellationToken cancellationToken);
+}
+```
+
 ---
 
 ## 🔒 Безопасность
@@ -814,7 +865,7 @@ import { FixedSizeList } from 'react-window';
 - [ ] Асинхронные методы имеют суффикс Async
 - [ ] Методы не длиннее 50 строк
 - [ ] Классы не длиннее 500 строк
-- [ ] Есть XML комментарии для public API
+- [ ] Публичные типы и методы снабжены XML-комментариями по разделу «Документирование backend» выше
 - [ ] Обработаны все исключения
 - [ ] Есть unit-тесты
 

@@ -17,8 +17,10 @@ public sealed class Apartment
     {
     }
 
-    public static Apartment Create(Guid buildingId, string number, int? floor) =>
-        Create(Guid.NewGuid(), buildingId, number, floor);
+    public static Apartment Create(Guid buildingId, string number, int? floor)
+    {
+        return Create(Guid.NewGuid(), buildingId, number, floor);
+    }
 
     public static Apartment Create(Guid id, Guid buildingId, string number, int? floor)
     {

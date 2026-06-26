@@ -5,10 +5,15 @@ using GQ.WebApi.Infrastructure.Interfaces.Repositories;
 
 namespace GQ.WebApi.DataAccess.Postgres.Repositories;
 
+/// <summary>
+/// Реализация <see cref="IOwnerRepository"/> на EF Core и PostgreSQL.
+/// </summary>
 public sealed class OwnerRepository(AppDbContext dbContext) : IOwnerRepository
 {
-    public Task<Owner?> GetByApartmentIdAsync(Guid apartmentId, CancellationToken cancellationToken = default) =>
-        dbContext.Owners.FirstOrDefaultAsync(x => x.ApartmentId == apartmentId, cancellationToken);
+    public Task<Owner?> GetByApartmentIdAsync(Guid apartmentId, CancellationToken cancellationToken = default)
+    {
+        return dbContext.Owners.FirstOrDefaultAsync(x => x.ApartmentId == apartmentId, cancellationToken);
+    }
 
     public async Task AddAsync(Owner owner, CancellationToken cancellationToken = default)
     {

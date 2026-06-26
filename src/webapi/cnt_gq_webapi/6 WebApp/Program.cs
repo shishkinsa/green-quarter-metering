@@ -59,4 +59,5 @@ app.MapControllers();
 
 app.Run();
 
+/// <summary>Точка входа Web API; partial-класс для интеграционных тестов (<c>WebApplicationFactory</c>).</summary>
 public partial class Program;

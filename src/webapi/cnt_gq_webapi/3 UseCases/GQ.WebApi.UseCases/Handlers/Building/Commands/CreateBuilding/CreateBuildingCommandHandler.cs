@@ -7,6 +7,7 @@ using BuildingEntity = GQ.WebApi.Entities.Building;
 
 namespace GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
 
+/// <summary>Создаёт дом в справочнике ЖК.</summary>
 public sealed class CreateBuildingCommandHandler(
     IBuildingRepository repository,
     IValidator<CreateBuildingCommand> validator)

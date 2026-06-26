@@ -8,6 +8,11 @@ using MediatR;
 
 namespace GQ.WebApi.UseCases.Handlers.Apartment.Commands.CreateApartment;
 
+/// <summary>
+/// Создаёт квартиру в указанном доме.
+/// </summary>
+/// <exception cref="UseCaseNotFoundException">Дом не найден.</exception>
+/// <exception cref="UseCaseConflictException">Номер квартиры уже занят в этом доме.</exception>
 public sealed class CreateApartmentCommandHandler(
     IBuildingRepository buildingRepository,
     IApartmentRepository apartmentRepository,

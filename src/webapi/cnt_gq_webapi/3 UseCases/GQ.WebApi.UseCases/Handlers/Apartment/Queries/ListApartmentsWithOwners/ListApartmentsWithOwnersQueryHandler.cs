@@ -5,6 +5,10 @@ using MediatR;
 
 namespace GQ.WebApi.UseCases.Handlers.Apartment.Queries.ListApartmentsWithOwners;
 
+/// <summary>
+/// Возвращает квартиры дома вместе с данными владельцев.
+/// </summary>
+/// <exception cref="UseCaseNotFoundException">Дом не найден.</exception>
 public sealed class ListApartmentsWithOwnersQueryHandler(
     IBuildingRepository buildingRepository,
     IApartmentRepository apartmentRepository)

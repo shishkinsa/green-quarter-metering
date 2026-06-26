@@ -6,6 +6,10 @@ using MediatR;
 
 namespace GQ.WebApi.UseCases.Handlers.Building.Commands.UpdateBuilding;
 
+/// <summary>
+/// Обновляет данные существующего дома.
+/// </summary>
+/// <exception cref="UseCaseNotFoundException">Дом с указанным идентификатором не найден.</exception>
 public sealed class UpdateBuildingCommandHandler(
     IBuildingRepository repository,
     IValidator<UpdateBuildingCommand> validator)

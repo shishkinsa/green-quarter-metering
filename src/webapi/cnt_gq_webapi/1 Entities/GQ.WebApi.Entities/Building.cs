@@ -15,8 +15,10 @@ public sealed class Building
     {
     }
 
-    public static Building Create(string name, string? address) =>
-        Create(Guid.NewGuid(), name, address);
+    public static Building Create(string name, string? address)
+    {
+        return Create(Guid.NewGuid(), name, address);
+    }
 
     public static Building Create(Guid id, string name, string? address)
     {

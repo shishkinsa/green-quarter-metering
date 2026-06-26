@@ -5,6 +5,9 @@ using GQ.WebApi.Infrastructure.Interfaces.Repositories;
 
 namespace GQ.WebApi.DataAccess.Postgres.Repositories;
 
+/// <summary>
+/// Реализация <see cref="IBuildingRepository"/> на EF Core и PostgreSQL.
+/// </summary>
 public sealed class BuildingRepository(AppDbContext dbContext) : IBuildingRepository
 {
     public async Task<IReadOnlyList<Building>> ListAsync(CancellationToken cancellationToken = default)
@@ -15,8 +18,10 @@ public sealed class BuildingRepository(AppDbContext dbContext) : IBuildingReposi
             .ToListAsync(cancellationToken);
     }
 
-    public Task<Building?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        dbContext.Buildings.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    public Task<Building?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return dbContext.Buildings.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
 
     public async Task AddAsync(Building building, CancellationToken cancellationToken = default)
     {
