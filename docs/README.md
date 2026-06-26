@@ -56,17 +56,14 @@
 | CQRS (MediatR) | [0005](architecture/adr/0005-requestum-cqrs.md) * |
 | OpenTelemetry | [0006](architecture/adr/0006-opentelemetry-observability.md) |
 | FluentValidation | [0007](architecture/adr/0007-fluentvalidation.md) |
-| Auth skeleton | [0008](architecture/adr/0008-jwt-authentication-skeleton.md) |
 
 \* ADR-0005 описывает Requestum; в проекте используется **MediatR** — см. [backend.md](architecture/specs/backend.md) и [openspec/project.md](../openspec/project.md).
 
-## Эталонные capability
+## Capability
 
 | ID | Тип | Spec |
 |----|-----|------|
-| `examples` | CRUD | [spec.md](../openspec/specs/examples/spec.md) |
-| `categories` | read-only | [spec.md](../openspec/specs/categories/spec.md) |
-| `auth` | skeleton | [spec.md](../openspec/specs/auth/spec.md) |
+| `directories` | справочники ЖК | [spec.md](../openspec/specs/directories/spec.md) |
 
 ## Проверка
 

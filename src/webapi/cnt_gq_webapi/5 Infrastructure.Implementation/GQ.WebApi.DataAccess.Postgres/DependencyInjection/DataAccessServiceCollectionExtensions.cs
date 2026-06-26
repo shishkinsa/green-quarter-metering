@@ -19,8 +19,9 @@ public static class DataAccessServiceCollectionExtensions
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
         services.AddScoped<IDbContext>(sp => sp.GetRequiredService<AppDbContext>());
-        services.AddScoped<IExampleItemRepository, ExampleItemRepository>();
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IBuildingRepository, BuildingRepository>();
+        services.AddScoped<IApartmentRepository, ApartmentRepository>();
+        services.AddScoped<IOwnerRepository, OwnerRepository>();
 
         return services;
     }

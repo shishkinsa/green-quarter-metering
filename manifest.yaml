@@ -1,84 +1,57 @@
-# SPDF — машиночитаемый индекс Зеленый квартал — Учёт электроэнергии
-# См. docs/README.md
-
-version: 1
-framework: docs/README.md
-agent_entry: AGENTS.md
-
-priority_on_conflict:
-  behavior: openspec/specs
-  api_contract: docs/architecture/openapi/components/openapi.yaml
-  structure: docs/architecture/adr
-  constraints: docs/requirements/constraints
-
-layers:
-  behavior:
-    root: openspec/specs
-    changes: openspec/changes
-    validate: npx openspec validate --specs --strict --no-interactive
-  intent:
-    root: docs/requirements
-    index: docs/requirements/index.yaml
-    business: docs/requirements/business
-    constraints: docs/requirements/constraints
-  structure:
-    root: docs/architecture
-    openapi: docs/architecture/openapi/components/openapi.yaml
-    adr: docs/architecture/adr
-    diagrams: docs/architecture/diagram
-    capacity: docs/architecture/planning/capacity.md
-    layers:
-      assemblies: docs/architecture/specs/assemblies.md
-      backend: docs/architecture/specs/backend.md
-      frontend: docs/architecture/specs/frontend.md
-  process:
-    workflows: docs/process/workflows
-    context: docs/process/context/containers.md
-  standards:
-    root: docs/standards
-    coding: docs/standards/coding-standards.md
-    git: docs/standards/git-flow.md
-    naming: docs/standards/naming
-
-capabilities:
-  examples:
-    spec: openspec/specs/examples/spec.md
-    design: openspec/specs/examples/design.md
-    scenario_coverage: openspec/specs/examples/scenario-coverage.txt
-    business: docs/requirements/business/capabilities.md#examples
-    constraints:
-      - docs/requirements/constraints/performance.md
-      - docs/requirements/constraints/security.md
-    openapi_paths:
-      - /health
-      - /examples
-    adr:
-      - docs/architecture/adr/0005-requestum-cqrs.md
-      - docs/architecture/adr/0007-fluentvalidation.md
-    backend: src/webapi/cnt_gq_webapi/3 UseCases/GQ.WebApi.UseCases/Handlers/Example
-    frontend: src/frontend/cnt_gq_web/src/entities/example
-
-  categories:
-    spec: openspec/specs/categories/spec.md
-    design: openspec/specs/categories/design.md
-    scenario_coverage: openspec/specs/categories/scenario-coverage.txt
-    business: docs/requirements/business/capabilities.md#categories
-    constraints:
-      - docs/requirements/constraints/performance.md
-    openapi_paths:
-      - /categories
-    backend: src/webapi/cnt_gq_webapi/3 UseCases/GQ.WebApi.UseCases/Handlers/Category
-    frontend: src/frontend/cnt_gq_web/src/entities/category
-
-  auth:
-    spec: openspec/specs/auth/spec.md
-    design: openspec/specs/auth/design.md
-    business: docs/requirements/business/capabilities.md#auth
-    constraints:
-      - docs/requirements/constraints/security.md
-    openapi_paths:
-      - /examples
-    adr:
-      - docs/architecture/adr/0008-jwt-authentication-skeleton.md
-    backend: src/webapi/cnt_gq_webapi/6 WebApp/Authentication
-    frontend: src/frontend/cnt_gq_web/src/shared/auth
+# SPDF — машиночитаемый индекс Зеленый квартал — Учёт электроэнергии
+# См. docs/README.md
+
+version: 1
+framework: docs/README.md
+agent_entry: AGENTS.md
+
+priority_on_conflict:
+  behavior: openspec/specs
+  api_contract: docs/architecture/openapi/components/openapi.yaml
+  structure: docs/architecture/adr
+  constraints: docs/requirements/constraints
+
+layers:
+  behavior:
+    root: openspec/specs
+    changes: openspec/changes
+    validate: npx openspec validate --specs --strict --no-interactive
+  intent:
+    root: docs/requirements
+    index: docs/requirements/index.yaml
+    business: docs/requirements/business
+    constraints: docs/requirements/constraints
+  structure:
+    root: docs/architecture
+    openapi: docs/architecture/openapi/components/openapi.yaml
+    adr: docs/architecture/adr
+    diagrams: docs/architecture/diagram
+    capacity: docs/architecture/planning/capacity.md
+    layers:
+      assemblies: docs/architecture/specs/assemblies.md
+      backend: docs/architecture/specs/backend.md
+      frontend: docs/architecture/specs/frontend.md
+  process:
+    workflows: docs/process/workflows
+    context: docs/process/context/containers.md
+  standards:
+    root: docs/standards
+    coding: docs/standards/coding-standards.md
+    git: docs/standards/git-flow.md
+    naming: docs/standards/naming
+
+capabilities:
+  directories:
+    spec: openspec/specs/directories/spec.md
+    design: openspec/specs/directories/design.md
+    scenario_coverage: openspec/specs/directories/scenario-coverage.txt
+    business: docs/requirements/business/capabilities.md#directories
+    constraints:
+      - docs/requirements/constraints/performance.md
+    openapi_paths:
+      - /health
+      - /buildings
+      - /buildings/{buildingId}/apartments
+      - /apartments/{apartmentId}/owner
+    backend: src/webapi/cnt_gq_webapi/3 UseCases/GQ.WebApi.UseCases/Handlers/Building
+    frontend: src/frontend/cnt_gq_web/src/entities/building

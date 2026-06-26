@@ -41,7 +41,7 @@ cd my-project
 3. Реализация → `.\scripts\verify.ps1`
 4. `/opsx-archive`
 
-Эталоны: capability `examples` (CRUD), `categories` (read-only), `auth` (skeleton).
+Эталон: capability `directories` (справочники домов, квартир и владельцев).
 
 ## 5. Окружение и DevOps
 

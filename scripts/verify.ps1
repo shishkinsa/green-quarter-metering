@@ -28,7 +28,7 @@ Write-Host "=== Manifest (SPDF index) ===" -ForegroundColor Cyan
 & (Join-Path $root 'scripts\check-manifest.ps1') -Root $root
 if ($LASTEXITCODE -ne 0) { throw "Manifest check failed" }
 
-Write-Host "=== Spec coverage (examples API scenarios) ===" -ForegroundColor Cyan
+Write-Host "=== Spec coverage (API scenarios) ===" -ForegroundColor Cyan
 & (Join-Path $root 'scripts\check-spec-coverage.ps1')
 
 Write-Host "=== Frontend: lint & build ===" -ForegroundColor Cyan

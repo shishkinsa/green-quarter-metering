@@ -2,9 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using GQ.Shared.Observability.Extensions;
 using GQ.WebApi.DataAccess.Postgres.Data;
 using GQ.WebApi.DataAccess.Postgres.DependencyInjection;
-using GQ.WebApi.UseCases.Handlers.Example.Commands.CreateExample;
-using GQ.WebApi.UseCases.Handlers.Example.Commands.CreateExample.Validators;
-using GQ.WebApi.WebApp.Authentication;
+using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
+using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding.Validators;
 using GQ.WebApi.WebApp.ExceptionHandlers;
 using FluentValidation;
 
@@ -18,16 +17,14 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddGqAuthentication(builder.Configuration, builder.Environment);
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!string.IsNullOrWhiteSpace(connectionString))
 {
     builder.Services.AddPostgresDataAccess(connectionString);
 }
 
-builder.Services.AddValidatorsFromAssemblyContaining<CreateExampleCommandValidator>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateExampleCommand).Assembly));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBuildingCommandValidator>();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateBuildingCommand).Assembly));
 
 builder.Services.AddGQObservability(
     builder.Logging,
@@ -43,7 +40,7 @@ if (builder.Configuration.GetValue<bool>("Database:AutoMigrate")
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-    DatabaseSeeder.SeedCategories(db);
+    DatabaseSeeder.SeedDirectories(db);
 }
 
 app.UseExceptionHandler();
@@ -55,14 +52,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-var authEnabled = builder.Configuration.GetValue<bool>("Auth:Enabled");
-if (authEnabled)
-{
-    app.UseAuthentication();
-}
-
-app.UseAuthorization();
 
 app.MapControllers();
 

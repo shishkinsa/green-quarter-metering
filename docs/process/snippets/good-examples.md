@@ -2,38 +2,32 @@
 
 Few-shot примеры «хорошего» стиля проекта. Дополняйте по мере появления эталонных реализаций.
 
-## Backend: обработчик команды (Requestum)
+## Backend: обработчик команды (MediatR)
 
 ```csharp
-using Requestum.Contract;
+namespace GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
 
-namespace GQ.WebApi.UseCases.Handlers.Example.Commands.CreateExample;
-
-public sealed record CreateExampleCommand(string Name) : ICommand<CreateExampleResponse>;
-
-public sealed class CreateExampleCommandHandler(IExampleItemRepository repository)
-    : IAsyncCommandHandler<CreateExampleCommand, CreateExampleResponse>
+public sealed class CreateBuildingCommandHandler(IBuildingRepository repository)
+    : IRequestHandler<CreateBuildingCommand, CreateBuildingResponse>
 {
-    public async Task<CreateExampleResponse> ExecuteAsync(
-        CreateExampleCommand command,
+    public async Task<CreateBuildingResponse> Handle(
+        CreateBuildingCommand command,
         CancellationToken cancellationToken = default)
     {
-        var entity = ExampleItem.Create(command.Name);
+        var entity = Building.Create(command.Name, command.Address);
         await repository.AddAsync(entity, cancellationToken);
-        return new CreateExampleResponse(ExampleMappings.ToDto(entity));
+        return new CreateBuildingResponse(BuildingMappings.ToDto(entity));
     }
 }
 ```
 
-## Frontend: хук фичи
+## Frontend: API-слой entity
 
 ```typescript
 /**
- * Загружает список элементов для экрана примера.
- *
- * @returns состояние загрузки и данные
+ * Загружает список домов для страницы справочников.
  */
-export function useLoadExamples() {
-  // ...
+export async function fetchBuildings(): Promise<ListBuildingsResponse> {
+  return apiFetch<ListBuildingsResponse>('/v1/buildings');
 }
 ```

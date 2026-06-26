@@ -21,34 +21,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/examples": {
+    "/buildings": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Список примеров сущностей */
-        get: operations["listExamples"];
+        /** Список домов */
+        get: operations["listBuildings"];
         put?: never;
-        /** Создать пример */
-        post: operations["createExample"];
+        /** Создать дом */
+        post: operations["createBuilding"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/categories": {
+    "/buildings/{buildingId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Список справочных категорий (read-only) */
-        get: operations["listCategories"];
-        put?: never;
+        get?: never;
+        /** Обновить дом */
+        put: operations["updateBuilding"];
         post?: never;
         delete?: never;
         options?: never;
@@ -56,20 +56,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/examples/{id}": {
+    "/buildings/{buildingId}/apartments": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Получить пример по id */
-        get: operations["getExampleById"];
-        /** Обновить пример */
-        put: operations["updateExample"];
+        /** Квартиры дома с владельцами */
+        get: operations["listApartmentsWithOwners"];
+        put?: never;
+        /** Создать квартиру в доме */
+        post: operations["createApartment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/apartments/{apartmentId}/owner": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Назначить или обновить владельца квартиры */
+        put: operations["upsertApartmentOwner"];
         post?: never;
-        /** Удалить пример */
-        delete: operations["deleteExample"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -85,39 +101,65 @@ export interface components {
             /** @example GQ.WebApi.WebApp */
             service: string;
         };
-        ExampleItemDto: {
+        BuildingDto: {
             /** Format: uuid */
             id: string;
             name: string;
-            /** Format: date-time */
-            createdAt: string;
+            address?: string | null;
         };
-        CreateExampleRequest: {
-            name: string;
-        };
-        CreateExampleResponse: {
-            item: components["schemas"]["ExampleItemDto"];
-        };
-        ListExamplesResponse: {
-            items: components["schemas"]["ExampleItemDto"][];
-        };
-        GetExampleByIdResponse: {
-            item: components["schemas"]["ExampleItemDto"];
-        };
-        UpdateExampleRequest: {
-            name: string;
-        };
-        UpdateExampleResponse: {
-            item: components["schemas"]["ExampleItemDto"];
-        };
-        CategoryDto: {
+        ApartmentWithOwnerDto: {
             /** Format: uuid */
             id: string;
-            code: string;
-            name: string;
+            /** Format: uuid */
+            buildingId: string;
+            number: string;
+            floor?: number | null;
+            /** Format: uuid */
+            ownerId?: string | null;
+            ownerFullName?: string | null;
+            ownerPhone?: string | null;
         };
-        ListCategoriesResponse: {
-            items: components["schemas"]["CategoryDto"][];
+        OwnerDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            apartmentId: string;
+            fullName: string;
+            phone?: string | null;
+        };
+        CreateBuildingRequest: {
+            name: string;
+            address?: string | null;
+        };
+        CreateBuildingResponse: {
+            item: components["schemas"]["BuildingDto"];
+        };
+        UpdateBuildingRequest: {
+            name: string;
+            address?: string | null;
+        };
+        UpdateBuildingResponse: {
+            item: components["schemas"]["BuildingDto"];
+        };
+        ListBuildingsResponse: {
+            items: components["schemas"]["BuildingDto"][];
+        };
+        CreateApartmentRequest: {
+            number: string;
+            floor?: number | null;
+        };
+        CreateApartmentResponse: {
+            item: components["schemas"]["ApartmentWithOwnerDto"];
+        };
+        ListApartmentsWithOwnersResponse: {
+            items: components["schemas"]["ApartmentWithOwnerDto"][];
+        };
+        UpsertApartmentOwnerRequest: {
+            fullName: string;
+            phone?: string | null;
+        };
+        UpsertApartmentOwnerResponse: {
+            item: components["schemas"]["OwnerDto"];
         };
     };
     responses: never;
@@ -148,7 +190,7 @@ export interface operations {
             };
         };
     };
-    listExamples: {
+    listBuildings: {
         parameters: {
             query?: never;
             header?: never;
@@ -157,18 +199,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Список */
+            /** @description Список домов */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListExamplesResponse"];
+                    "application/json": components["schemas"]["ListBuildingsResponse"];
                 };
             };
         };
     };
-    createExample: {
+    createBuilding: {
         parameters: {
             query?: never;
             header?: never;
@@ -177,7 +219,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateExampleRequest"];
+                "application/json": components["schemas"]["CreateBuildingRequest"];
             };
         };
         responses: {
@@ -187,7 +229,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateExampleResponse"];
+                    "application/json": components["schemas"]["CreateBuildingResponse"];
                 };
             };
             /** @description Ошибка валидации */
@@ -197,76 +239,20 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Требуется аутентификация (при Auth:Enabled) */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
         };
     };
-    listCategories: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Список категорий */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListCategoriesResponse"];
-                };
-            };
-        };
-    };
-    getExampleById: {
+    updateBuilding: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Найдено */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetExampleByIdResponse"];
-                };
-            };
-            /** @description Не найдено */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    updateExample: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
+                buildingId: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateExampleRequest"];
+                "application/json": components["schemas"]["UpdateBuildingRequest"];
             };
         };
         responses: {
@@ -276,7 +262,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UpdateExampleResponse"];
+                    "application/json": components["schemas"]["UpdateBuildingResponse"];
                 };
             };
             /** @description Ошибка валидации */
@@ -295,25 +281,114 @@ export interface operations {
             };
         };
     };
-    deleteExample: {
+    listApartmentsWithOwners: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                id: string;
+                buildingId: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Удалено */
-            204: {
+            /** @description Список квартир */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListApartmentsWithOwnersResponse"];
+                };
+            };
+            /** @description Дом не найден */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description Не найдено */
+        };
+    };
+    createApartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                buildingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApartmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Создано */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateApartmentResponse"];
+                };
+            };
+            /** @description Ошибка валидации */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Дом не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Дубликат номера квартиры */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    upsertApartmentOwner: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                apartmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertApartmentOwnerRequest"];
+            };
+        };
+        responses: {
+            /** @description Сохранено */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpsertApartmentOwnerResponse"];
+                };
+            };
+            /** @description Ошибка валидации */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Квартира не найдена */
             404: {
                 headers: {
                     [name: string]: unknown;

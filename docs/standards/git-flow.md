@@ -230,7 +230,7 @@ Closes #123"
 
 ## 📚 Связанные документы
 - [ADR-0007 FluentValidation](../architecture/adr/0007-fluentvalidation.md)
-- capability `examples` → [openspec/specs/examples/spec.md](../../openspec/specs/examples/spec.md) (пример)
+- capability `directories` → [openspec/specs/directories/spec.md](../../openspec/specs/directories/spec.md) (пример)
 ```
 
 ### Правила PR

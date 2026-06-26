@@ -1,5 +1,3 @@
-import { getAuthToken } from '@/shared/auth/token';
-
 /**
  * Базовый HTTP-клиент для вызовов `/api`.
  *
@@ -10,11 +8,6 @@ import { getAuthToken } from '@/shared/auth/token';
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
   headers.set('Accept', 'application/json');
-
-  const token = getAuthToken();
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
 
   const response = await fetch(`/api${path}`, {
     ...init,

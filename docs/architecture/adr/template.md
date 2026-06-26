@@ -14,7 +14,7 @@
 
 | Тип | Ссылка |
 |-----|--------|
-| **Требования** | capability `examples` → [openspec/specs/examples/spec.md](../../../openspec/specs/examples/spec.md), [NFR-002](../../requirements/constraints/security.md) |
+| **Требования** | capability `directories` → [openspec/specs/directories/spec.md](../../../openspec/specs/directories/spec.md), [NFR-002](../../requirements/constraints/security.md) |
 | **Диаграммы** | [Контекстная диаграмма](../diagram/context/01-model.c4) |
 | **Документация** | [Wiki page](https://confluence.company.com/...) |
 

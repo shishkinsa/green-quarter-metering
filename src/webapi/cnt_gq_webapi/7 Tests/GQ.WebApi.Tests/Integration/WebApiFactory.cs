@@ -33,7 +33,6 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = string.Empty,
-                ["Auth:Enabled"] = "false",
             });
         });
 
@@ -42,14 +41,16 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
             services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
             services.RemoveAll(typeof(AppDbContext));
             services.RemoveAll(typeof(IDbContext));
-            services.RemoveAll(typeof(IExampleItemRepository));
-            services.RemoveAll(typeof(ICategoryRepository));
+            services.RemoveAll(typeof(IBuildingRepository));
+            services.RemoveAll(typeof(IApartmentRepository));
+            services.RemoveAll(typeof(IOwnerRepository));
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase(_databaseName));
             services.AddScoped<IDbContext>(sp => sp.GetRequiredService<AppDbContext>());
-            services.AddScoped<IExampleItemRepository, ExampleItemRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IBuildingRepository, BuildingRepository>();
+            services.AddScoped<IApartmentRepository, ApartmentRepository>();
+            services.AddScoped<IOwnerRepository, OwnerRepository>();
         });
     }
 
@@ -59,7 +60,7 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
 
         using var scope = host.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        DatabaseSeeder.SeedCategories(db);
+        DatabaseSeeder.SeedDirectories(db);
 
         return host;
     }

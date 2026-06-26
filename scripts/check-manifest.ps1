@@ -25,9 +25,7 @@ $requiredPaths = @(
     'docs\architecture\specs\frontend.md',
     'docs\standards\coding-standards.md',
     'docs\standards\git-flow.md',
-    'openspec\specs\examples\spec.md',
-    'openspec\specs\categories\spec.md',
-    'openspec\specs\auth\spec.md',
+    'openspec\specs\directories\spec.md',
     'docs\architecture\openapi\components\openapi.yaml'
 )
 

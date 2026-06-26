@@ -1,0 +1,7 @@
+List buildings returns seeded building | ListBuildings_ReturnsSeededBuilding
+List apartments with owners returns seeded data | ListApartmentsWithOwners_ReturnsSeededData
+Create building and apartment works | CreateBuilding_AndApartment_Works
+List apartments when building not found returns 404 | ListApartments_WhenBuildingNotFound_Returns404
+Upsert owner works | UpsertOwner_Works
+Upsert owner when apartment not found returns 404 | UpsertOwner_WhenApartmentNotFound_Returns404
+Upsert owner with invalid name returns 400 | UpsertOwner_WithInvalidName_Returns400

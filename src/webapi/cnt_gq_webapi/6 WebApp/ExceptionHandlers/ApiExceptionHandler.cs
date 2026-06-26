@@ -20,6 +20,7 @@ public sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) : I
         {
             ValidationException => (StatusCodes.Status400BadRequest, "Validation failed"),
             UseCaseNotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
+            UseCaseConflictException => (StatusCodes.Status409Conflict, "Conflict"),
             ArgumentException => (StatusCodes.Status400BadRequest, "Invalid argument"),
             _ => (StatusCodes.Status500InternalServerError, "Internal server error"),
         };

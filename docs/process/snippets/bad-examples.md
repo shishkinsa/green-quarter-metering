@@ -7,25 +7,25 @@
 ```csharp
 // ❌ Плохо
 [HttpPost]
-public async Task<IActionResult> Create([FromBody] CreateExampleRequest request)
+public async Task<IActionResult> Create([FromBody] CreateBuildingRequest request)
 {
-    var entity = new ExampleItem { Id = Guid.NewGuid(), Name = request.Name };
-    await _dbContext.Set<ExampleItem>().AddAsync(entity);
+    var entity = new Building { Id = Guid.NewGuid(), Name = request.Name };
+    await _dbContext.Set<Building>().AddAsync(entity);
     await _dbContext.SaveChangesAsync();
     return Ok(entity);
 }
 ```
 
-Логика — в `CommandHandler`, контроллер только диспетчеризует Requestum.
+Логика — в `CommandHandler`, контроллер только диспетчеризует MediatR.
 
 ## Backend: прямой DbContext в UseCases
 
 ```csharp
 // ❌ Плохо — UseCases не ссылается на EF
-public class CreateExampleCommandHandler(AppDbContext db) { ... }
+public class CreateBuildingCommandHandler(AppDbContext db) { ... }
 ```
 
-Используй `IExampleItemRepository` из `Infrastructure.Interfaces`.
+Используй `IBuildingRepository` из `Infrastructure.Interfaces`.
 
 ## Backend: изменение API без OpenAPI
 
@@ -34,20 +34,20 @@ public class CreateExampleCommandHandler(AppDbContext db) { ... }
 ## Frontend: fetch в компоненте страницы
 
 ```typescript
-// ❌ Плохо — в pages/home/ui/HomePage.tsx
-useEffect(() => {
-  fetch('/api/v1/examples').then(r => r.json()).then(setData);
-}, []);
+// ❌ Плохо — в pages/directories/ui/DirectoriesPage.vue
+onMounted(() => {
+  fetch('/api/v1/buildings').then(r => r.json()).then(setData);
+});
 ```
 
-API-вызовы — в `entities/*/api`, состояние — в `features/*/model` или хуках фичи.
+API-вызовы — в `entities/*/api`, состояние — в `features/*/model` или composables фичи.
 
 ## Frontend: импорт features из entities
 
 ```typescript
 // ❌ Плохо — нарушение FSD
-import { CreateExampleForm } from '@/features/example/create-item';
-// внутри entities/example/
+import { CreateBuildingForm } from '@/features/directory/create-building';
+// внутри entities/building/
 ```
 
 Зависимости FSD: `app → pages → widgets → features → entities → shared`.

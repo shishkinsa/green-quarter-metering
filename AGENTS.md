@@ -145,13 +145,11 @@ npx openspec new change "<name>" --schema full-stack
 | [docs/process/workflows/change-lifecycle.md](docs/process/workflows/change-lifecycle.md) | Lifecycle change |
 | [docs/architecture/openapi/components/openapi.yaml](docs/architecture/openapi/components/openapi.yaml) | REST |
 
-## Эталонные capability
+## Эталонная capability
 
 | ID | Spec | Код |
 |----|------|-----|
-| `examples` | [spec.md](openspec/specs/examples/spec.md) | `Handlers/Example/`, `entities/example` |
-| `categories` | [spec.md](openspec/specs/categories/spec.md) | `Handlers/Category/`, `entities/category` |
-| `auth` | [spec.md](openspec/specs/auth/spec.md) | `Authentication/*`, `shared/auth` |
+| `directories` | [spec.md](openspec/specs/directories/spec.md) | `Handlers/Building/`, `entities/building`, `pages/directories` |
 
 ## Правила
 

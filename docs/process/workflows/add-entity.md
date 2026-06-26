@@ -2,14 +2,11 @@
 
 Чеклист для AI и разработчика.
 
-**Эталоны capability:**
+**Эталон capability:**
 
 | Тип | Capability | Код |
 |-----|------------|-----|
-| CRUD (write) | `examples` / `ExampleItem` | [design.md](../../../openspec/specs/examples/design.md) |
-| Read-only справочник | `categories` / `Category` | [design.md](../../../openspec/specs/categories/design.md) |
-
-Для read-only сущности пропустите шаги Command/Validator/features и оставьте Query + List endpoint.
+| Справочники ЖК | `directories` / `Building` | [design.md](../../../openspec/specs/directories/design.md) |
 
 ## 0. OpenSpec change (обязательно для новых сущностей)
 

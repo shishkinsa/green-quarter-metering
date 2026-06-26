@@ -46,8 +46,8 @@ SPDF: [docs/README.md](../docs/README.md) · [manifest.yaml](../manifest.yaml)
 ## Domain Context
 
 - Контейнеры: `CNT_GQ_Web` (Vue SPA), `CNT_GQ_WebAPI` (REST), `CNT_GQ_DB` (PostgreSQL)
-- Идентификаторы домена: TBD в [containers.md](../docs/process/context/containers.md)
-- Эталонная сущность: `ExampleItem` — capability `examples`
+- Идентификаторы домена: UUID — см. [containers.md](../docs/process/context/containers.md)
+- Основная capability: `directories` — справочники домов, квартир и владельцев
 
 ## Important Constraints
 
@@ -75,8 +75,6 @@ SPDF: [docs/README.md](../docs/README.md) · [manifest.yaml](../manifest.yaml)
 
 | Capability | Spec | Backend | Frontend | Tests |
 |------------|------|---------|----------|-------|
-| `examples` (CRUD) | [spec.md](specs/examples/spec.md) | `Handlers/Example/` | `entities/example`, `features/example/*` | `ExamplesEndpointTests`, validators |
-| `categories` (read-only) | [spec.md](specs/categories/spec.md) | `Handlers/Category/` | `entities/category` | `CategoriesEndpointTests` |
-| `auth` (skeleton) | [spec.md](specs/auth/spec.md) | `Authentication/*` | `shared/auth` | — |
+| `directories` | [spec.md](specs/directories/spec.md) | `Handlers/Building/` | `entities/building`, `features/directory/*`, `pages/directories` | `BuildingsEndpointTests`, `ApartmentsEndpointTests` |
 
 Старт из шаблона: [docs/process/workflows/bootstrap-project.md](../docs/process/workflows/bootstrap-project.md)

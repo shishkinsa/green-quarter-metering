@@ -8,34 +8,15 @@ status: draft
 
 Краткий бизнес-контекст. **Канон поведения** — `openspec/specs/<capability>/spec.md`.
 
-## examples {#examples}
+## directories {#directories}
 
-CRUD примеров сущностей — эталонный сквозной сценарий шаблона.
-
-| ID | Как | Я хочу | Чтобы |
-|----|-----|--------|-------|
-| US-001 | разработчик | видеть список примеров на главной | убедиться, что frontend и backend связаны |
-| US-002 | разработчик | создать пример через форму | проверить POST API и обновление списка |
-| US-003 | разработчик | изменить пример через модальное окно | проверить PUT API |
-| US-004 | разработчик | удалить пример с подтверждением | проверить DELETE API |
-
-- Spec: [openspec/specs/examples/spec.md](../../../openspec/specs/examples/spec.md)
-- Код: `entities/example`, `features/example/*`, `Handlers/Example/`
-
-## categories {#categories}
-
-Read-only справочник категорий — второй capability, без мутаций.
+Справочник домов, квартир и владельцев ЖК — главная страница приложения.
 
 | ID | Как | Я хочу | Чтобы |
 |----|-----|--------|-------|
-| US-010 | разработчик | видеть справочник категорий на главной | проверить read-only API и второй capability |
+| US-020 | энергетик | видеть список домов | выбрать объект для просмотра квартир |
+| US-021 | энергетик | видеть таблицу квартир и владельцев по дому | знать, кому принадлежит помещение |
+| US-022 | энергетик | добавлять дома, квартиры и владельцев | вести справочник без правки БД |
 
-- Spec: [openspec/specs/categories/spec.md](../../../openspec/specs/categories/spec.md)
-- Код: `entities/category`, `Handlers/Category/`
-
-## auth {#auth}
-
-Скелет аутентификации (JWT Bearer, опционально). Полный OIDC — отдельный change.
-
-- Spec: [openspec/specs/auth/spec.md](../../../openspec/specs/auth/spec.md)
-- ADR: [0008](../../architecture/adr/0008-jwt-authentication-skeleton.md)
+- Spec: [openspec/specs/directories/spec.md](../../../openspec/specs/directories/spec.md)
+- Код: `entities/building`, `features/directory/*`, `Handlers/Building/`, `pages/directories`

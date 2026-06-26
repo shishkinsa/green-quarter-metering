@@ -7,26 +7,24 @@ namespace GQ.WebApi.DataAccess.Postgres.Data;
 /// </summary>
 public static class DatabaseSeeder
 {
-    public static void SeedCategories(AppDbContext dbContext)
+    public static void SeedDirectories(AppDbContext dbContext)
     {
-        if (dbContext.Categories.Any())
+        if (dbContext.Buildings.Any())
         {
             return;
         }
 
-        dbContext.Categories.AddRange(
-            Category.Create(
-                Guid.Parse("a0000001-0000-0000-0000-000000000001"),
-                "general",
-                "Общее"),
-            Category.Create(
-                Guid.Parse("a0000001-0000-0000-0000-000000000002"),
-                "demo",
-                "Демо"),
-            Category.Create(
-                Guid.Parse("a0000001-0000-0000-0000-000000000003"),
-                "template",
-                "Шаблон"));
+        var buildingId = Guid.Parse("b0000001-0000-0000-0000-000000000001");
+        var building = Building.Create(buildingId, "Корпус 1", "ул. Зелёная, 1");
+        dbContext.Buildings.Add(building);
+
+        var apartment1Id = Guid.Parse("c0000001-0000-0000-0000-000000000001");
+        dbContext.Apartments.Add(Apartment.Create(apartment1Id, buildingId, "12", 3));
+
+        var apartment2Id = Guid.Parse("c0000001-0000-0000-0000-000000000002");
+        dbContext.Apartments.Add(Apartment.Create(apartment2Id, buildingId, "15", 3));
+
+        dbContext.Owners.Add(Owner.Create(apartment1Id, "Иванов Иван Иванович", "+79001234567"));
 
         dbContext.SaveChanges();
     }

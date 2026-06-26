@@ -17,12 +17,6 @@ behavior:
   note: "Поведение — только в openspec/specs/"
 
 capabilities:
-  - id: examples
-    spec: openspec/specs/examples/spec.md
-    business: docs/requirements/business/capabilities.md#examples
-  - id: categories
-    spec: openspec/specs/categories/spec.md
-    business: docs/requirements/business/capabilities.md#categories
-  - id: auth
-    spec: openspec/specs/auth/spec.md
-    business: docs/requirements/business/capabilities.md#auth
+  - id: directories
+    spec: openspec/specs/directories/spec.md
+    business: docs/requirements/business/capabilities.md#directories

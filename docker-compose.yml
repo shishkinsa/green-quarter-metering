@@ -31,7 +31,6 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=cnt_gq_db;Username=cnt_gq_db_user;Password=${POSTGRES_PASSWORD:-ChangeMe_StrongPassword_123!}"
       Database__AutoMigrate: ${DATABASE_AUTO_MIGRATE:-true}
-      Auth__Enabled: ${AUTH_ENABLED:-false}
       OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:4317}
     ports:
       - "${BACKEND_PORT:-5025}:8080"

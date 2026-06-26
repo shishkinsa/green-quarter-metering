@@ -1,232 +1,335 @@
-openapi: 3.0.3
-info:
-  title: Зеленый квартал — Учёт электроэнергии API
-  version: 0.4.0
-  description: Канонический REST-контракт. Обновляйте синхронно с кодом WebAPI и клиента.
-
-servers:
-  - url: /api/v1
-    description: Внутренний API v1
-
-paths:
-  /health:
-    get:
-      operationId: getHealth
-      summary: Проверка готовности сервиса
-      tags: [System]
-      responses:
-        '200':
-          description: Сервис доступен
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HealthResponse'
-
-  /examples:
-    get:
-      operationId: listExamples
-      summary: Список примеров сущностей
-      tags: [Examples]
-      responses:
-        '200':
-          description: Список
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListExamplesResponse'
-    post:
-      operationId: createExample
-      summary: Создать пример
-      tags: [Examples]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateExampleRequest'
-      responses:
-        '201':
-          description: Создано
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateExampleResponse'
-        '400':
-          description: Ошибка валидации
-        '401':
-          description: Требуется аутентификация (при Auth:Enabled)
-
-  /categories:
-    get:
-      operationId: listCategories
-      summary: Список справочных категорий (read-only)
-      tags: [Categories]
-      responses:
-        '200':
-          description: Список категорий
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListCategoriesResponse'
-
-  /examples/{id}:
-    get:
-      operationId: getExampleById
-      summary: Получить пример по id
-      tags: [Examples]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Найдено
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetExampleByIdResponse'
-        '404':
-          description: Не найдено
-    put:
-      operationId: updateExample
-      summary: Обновить пример
-      tags: [Examples]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateExampleRequest'
-      responses:
-        '200':
-          description: Обновлено
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UpdateExampleResponse'
-        '400':
-          description: Ошибка валидации
-        '404':
-          description: Не найдено
-    delete:
-      operationId: deleteExample
-      summary: Удалить пример
-      tags: [Examples]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '204':
-          description: Удалено
-        '404':
-          description: Не найдено
-
-components:
-  schemas:
-    HealthResponse:
-      type: object
-      required: [status, service]
-      properties:
-        status:
-          type: string
-          example: ok
-        service:
-          type: string
-          example: GQ.WebApi.WebApp
-
-    ExampleItemDto:
-      type: object
-      required: [id, name, createdAt]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          maxLength: 256
-        createdAt:
-          type: string
-          format: date-time
-
-    CreateExampleRequest:
-      type: object
-      required: [name]
-      properties:
-        name:
-          type: string
-          maxLength: 256
-
-    CreateExampleResponse:
-      type: object
-      required: [item]
-      properties:
-        item:
-          $ref: '#/components/schemas/ExampleItemDto'
-
-    ListExamplesResponse:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExampleItemDto'
-
-    GetExampleByIdResponse:
-      type: object
-      required: [item]
-      properties:
-        item:
-          $ref: '#/components/schemas/ExampleItemDto'
-
-    UpdateExampleRequest:
-      type: object
-      required: [name]
-      properties:
-        name:
-          type: string
-          maxLength: 256
-
-    UpdateExampleResponse:
-      type: object
-      required: [item]
-      properties:
-        item:
-          $ref: '#/components/schemas/ExampleItemDto'
-
-    CategoryDto:
-      type: object
-      required: [id, code, name]
-      properties:
-        id:
-          type: string
-          format: uuid
-        code:
-          type: string
-          maxLength: 64
-        name:
-          type: string
-          maxLength: 256
-
-    ListCategoriesResponse:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryDto'
+openapi: 3.0.3
+info:
+  title: Зеленый квартал — Учёт электроэнергии API
+  version: 0.6.0
+  description: Канонический REST-контракт. Обновляйте синхронно с кодом WebAPI и клиента.
+
+servers:
+  - url: /api/v1
+    description: Внутренний API v1
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Проверка готовности сервиса
+      tags: [System]
+      responses:
+        '200':
+          description: Сервис доступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /buildings:
+    get:
+      operationId: listBuildings
+      summary: Список домов
+      tags: [Directories]
+      responses:
+        '200':
+          description: Список домов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListBuildingsResponse'
+    post:
+      operationId: createBuilding
+      summary: Создать дом
+      tags: [Directories]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBuildingRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBuildingResponse'
+        '400':
+          description: Ошибка валидации
+
+  /buildings/{buildingId}:
+    put:
+      operationId: updateBuilding
+      summary: Обновить дом
+      tags: [Directories]
+      parameters:
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBuildingRequest'
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateBuildingResponse'
+        '400':
+          description: Ошибка валидации
+        '404':
+          description: Не найдено
+
+  /buildings/{buildingId}/apartments:
+    get:
+      operationId: listApartmentsWithOwners
+      summary: Квартиры дома с владельцами
+      tags: [Directories]
+      parameters:
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Список квартир
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListApartmentsWithOwnersResponse'
+        '404':
+          description: Дом не найден
+    post:
+      operationId: createApartment
+      summary: Создать квартиру в доме
+      tags: [Directories]
+      parameters:
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApartmentRequest'
+      responses:
+        '201':
+          description: Создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateApartmentResponse'
+        '400':
+          description: Ошибка валидации
+        '404':
+          description: Дом не найден
+        '409':
+          description: Дубликат номера квартиры
+
+  /apartments/{apartmentId}/owner:
+    put:
+      operationId: upsertApartmentOwner
+      summary: Назначить или обновить владельца квартиры
+      tags: [Directories]
+      parameters:
+        - name: apartmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertApartmentOwnerRequest'
+      responses:
+        '200':
+          description: Сохранено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertApartmentOwnerResponse'
+        '400':
+          description: Ошибка валидации
+        '404':
+          description: Квартира не найдена
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, service]
+      properties:
+        status:
+          type: string
+          example: ok
+        service:
+          type: string
+          example: GQ.WebApi.WebApp
+
+    BuildingDto:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 256
+        address:
+          type: string
+          maxLength: 512
+          nullable: true
+
+    ApartmentWithOwnerDto:
+      type: object
+      required: [id, buildingId, number]
+      properties:
+        id:
+          type: string
+          format: uuid
+        buildingId:
+          type: string
+          format: uuid
+        number:
+          type: string
+          maxLength: 32
+        floor:
+          type: integer
+          nullable: true
+        ownerId:
+          type: string
+          format: uuid
+          nullable: true
+        ownerFullName:
+          type: string
+          maxLength: 256
+          nullable: true
+        ownerPhone:
+          type: string
+          maxLength: 32
+          nullable: true
+
+    OwnerDto:
+      type: object
+      required: [id, apartmentId, fullName]
+      properties:
+        id:
+          type: string
+          format: uuid
+        apartmentId:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+          maxLength: 256
+        phone:
+          type: string
+          maxLength: 32
+          nullable: true
+
+    CreateBuildingRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 256
+        address:
+          type: string
+          maxLength: 512
+          nullable: true
+
+    CreateBuildingResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/BuildingDto'
+
+    UpdateBuildingRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 256
+        address:
+          type: string
+          maxLength: 512
+          nullable: true
+
+    UpdateBuildingResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/BuildingDto'
+
+    ListBuildingsResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingDto'
+
+    CreateApartmentRequest:
+      type: object
+      required: [number]
+      properties:
+        number:
+          type: string
+          maxLength: 32
+        floor:
+          type: integer
+          nullable: true
+
+    CreateApartmentResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/ApartmentWithOwnerDto'
+
+    ListApartmentsWithOwnersResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApartmentWithOwnerDto'
+
+    UpsertApartmentOwnerRequest:
+      type: object
+      required: [fullName]
+      properties:
+        fullName:
+          type: string
+          maxLength: 256
+        phone:
+          type: string
+          maxLength: 32
+          nullable: true
+
+    UpsertApartmentOwnerResponse:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/OwnerDto'
