@@ -1,7 +1,7 @@
 using GQ.WebApi.DataAccess.Postgres.Data;
-using GQ.WebApi.DataAccess.Postgres.Repositories;
+using GQ.WebApi.DataAccess.Postgres.Queries;
 using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.Queries;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,10 +20,8 @@ public static class DataAccessServiceCollectionExtensions
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
         services.AddScoped<IDbContext>(sp => sp.GetRequiredService<AppDbContext>());
-        services.AddScoped<IBuildingRepository, BuildingRepository>();
-        services.AddScoped<IApartmentRepository, ApartmentRepository>();
-        services.AddScoped<IOwnerRepository, OwnerRepository>();
-        services.AddScoped<IMeterReadingRepository, MeterReadingRepository>();
+        services.AddScoped<IApartmentQueries, ApartmentQueries>();
+        services.AddScoped<IMeterReadingQueries, MeterReadingQueries>();
 
         return services;
     }

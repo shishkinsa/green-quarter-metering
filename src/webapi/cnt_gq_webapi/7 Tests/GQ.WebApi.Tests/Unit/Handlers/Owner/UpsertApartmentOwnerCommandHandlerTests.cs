@@ -6,6 +6,8 @@ using GQ.WebApi.UseCases.Handlers.Owner.Commands.UpsertApartmentOwner.Validators
 
 using GQ.WebApi.Tests.Unit.TestDoubles;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace GQ.WebApi.Tests.Unit.Handlers.Owner;
 
 public sealed class UpsertApartmentOwnerCommandHandlerTests
@@ -13,12 +15,11 @@ public sealed class UpsertApartmentOwnerCommandHandlerTests
     [Fact]
     public async Task UpsertApartmentOwnerCommandHandler_CreatesOwner()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         UpsertApartmentOwnerCommandHandler handler = new(
-            context.Apartments,
-            context.Owners,
+            context.Db,
             new UpsertApartmentOwnerCommandValidator());
 
         UpsertApartmentOwnerResponse response = await handler.Handle(
@@ -29,18 +30,17 @@ public sealed class UpsertApartmentOwnerCommandHandlerTests
             CancellationToken.None);
 
         Assert.Equal("Петров Пётр Петрович", response.Item.FullName);
-        Assert.Equal(2, context.Owners.Items.Count);
+        Assert.Equal(2, await context.Db.Owners.CountAsync());
     }
 
     [Fact]
     public async Task UpsertApartmentOwnerCommandHandler_UpdatesOwner()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         UpsertApartmentOwnerCommandHandler handler = new(
-            context.Apartments,
-            context.Owners,
+            context.Db,
             new UpsertApartmentOwnerCommandValidator());
 
         UpsertApartmentOwnerResponse response = await handler.Handle(
@@ -51,16 +51,15 @@ public sealed class UpsertApartmentOwnerCommandHandlerTests
             CancellationToken.None);
 
         Assert.Equal("Иванов Иван Обновлённый", response.Item.FullName);
-        Assert.Single(context.Owners.Items);
+        Assert.Equal(1, await context.Db.Owners.CountAsync());
     }
 
     [Fact]
     public async Task UpsertApartmentOwnerCommandHandler_WhenApartmentNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
+        await using HandlerTestContext context = new();
         UpsertApartmentOwnerCommandHandler handler = new(
-            context.Apartments,
-            context.Owners,
+            context.Db,
             new UpsertApartmentOwnerCommandValidator());
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
@@ -74,12 +73,11 @@ public sealed class UpsertApartmentOwnerCommandHandlerTests
     [InlineData("   ")]
     public async Task UpsertApartmentOwnerCommandHandler_WhenInvalidName_ThrowsValidation(string fullName)
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         UpsertApartmentOwnerCommandHandler handler = new(
-            context.Apartments,
-            context.Owners,
+            context.Db,
             new UpsertApartmentOwnerCommandValidator());
 
         await Assert.ThrowsAsync<ValidationException>(

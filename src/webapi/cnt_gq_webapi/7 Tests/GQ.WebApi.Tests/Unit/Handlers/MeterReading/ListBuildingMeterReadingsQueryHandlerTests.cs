@@ -14,9 +14,9 @@ public sealed class ListBuildingMeterReadingsQueryHandlerTests
     [Fact]
     public async Task ListBuildingMeterReadingsQueryHandler_ReturnsStatus()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
-        context.SeedMeterReadingMay2026();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
+        await context.SeedMeterReadingMay2026Async();
 
         ListBuildingMeterReadingsQueryHandler handler = CreateHandler(context);
         ListBuildingMeterReadingsResponse response = await handler.Handle(
@@ -37,7 +37,7 @@ public sealed class ListBuildingMeterReadingsQueryHandlerTests
     [Fact]
     public async Task ListBuildingMeterReadingsQueryHandler_WhenBuildingNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
+        await using HandlerTestContext context = new();
         ListBuildingMeterReadingsQueryHandler handler = CreateHandler(context);
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
@@ -51,8 +51,8 @@ public sealed class ListBuildingMeterReadingsQueryHandlerTests
     [InlineData(13)]
     public async Task ListBuildingMeterReadingsQueryHandler_WhenInvalidMonth_ThrowsValidation(int periodMonth)
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         ListBuildingMeterReadingsQueryHandler handler = CreateHandler(context);
 
@@ -65,8 +65,8 @@ public sealed class ListBuildingMeterReadingsQueryHandlerTests
     private static ListBuildingMeterReadingsQueryHandler CreateHandler(HandlerTestContext context)
     {
         return new ListBuildingMeterReadingsQueryHandler(
-            context.Buildings,
-            context.MeterReadings,
+            context.Db,
+            context.MeterReadingQueries,
             new ListBuildingMeterReadingsQueryValidator());
     }
 }

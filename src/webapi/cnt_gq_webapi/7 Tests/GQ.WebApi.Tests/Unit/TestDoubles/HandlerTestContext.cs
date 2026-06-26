@@ -1,16 +1,24 @@
+using GQ.WebApi.DataAccess.Postgres.Data;
+using GQ.WebApi.DataAccess.Postgres.Queries;
 using GQ.WebApi.Entities;
+using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
+using GQ.WebApi.Infrastructure.Interfaces.Queries;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace GQ.WebApi.Tests.Unit.TestDoubles;
 
-internal sealed class HandlerTestContext
+internal sealed class HandlerTestContext: IAsyncDisposable
 {
-    public FakeBuildingRepository Buildings { get; } = new();
+    private readonly string databaseName = Guid.NewGuid().ToString();
 
-    public FakeOwnerRepository Owners { get; } = new();
+    public AppDbContext Db { get; private set; } = null!;
 
-    public FakeApartmentRepository Apartments { get; private set; } = null!;
+    public IDbContext Context => Db;
 
-    public FakeMeterReadingRepository MeterReadings { get; private set; } = null!;
+    public IApartmentQueries ApartmentQueries { get; private set; } = null!;
+
+    public IMeterReadingQueries MeterReadingQueries { get; private set; } = null!;
 
     public HandlerTestContext()
     {
@@ -19,24 +27,33 @@ internal sealed class HandlerTestContext
 
     public void Reset()
     {
-        Buildings.Items.Clear();
-        Owners.Items.Clear();
-        Apartments = new FakeApartmentRepository(Owners);
-        MeterReadings = new FakeMeterReadingRepository(Apartments, Owners);
-        Apartments.MeterReadings = MeterReadings;
+        Db?.Dispose();
+        DbContextOptions<AppDbContext> options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName)
+            .Options;
+        Db = new AppDbContext(options);
+        ApartmentQueries = new ApartmentQueries(Db);
+        MeterReadingQueries = new MeterReadingQueries(Db);
     }
 
-    public void SeedDirectory()
+    public async Task SeedDirectoryAsync()
     {
-        Buildings.Items.Add(Building.Create(TestIds.BuildingId, "Корпус 1", "ул. Зелёная, 1"));
-        Apartments.Items.Add(Apartment.Create(TestIds.Apartment1Id, TestIds.BuildingId, "12", 3));
-        Apartments.Items.Add(Apartment.Create(TestIds.Apartment2Id, TestIds.BuildingId, "15", 3));
-        Owners.Items.Add(Owner.Create(TestIds.Apartment1Id, "Иванов Иван Иванович", "+79001234567"));
+        Db.Buildings.Add(Building.Create(TestIds.BuildingId, "Корпус 1", "ул. Зелёная, 1"));
+        Db.Apartments.Add(Apartment.Create(TestIds.Apartment1Id, TestIds.BuildingId, "12", 3));
+        Db.Apartments.Add(Apartment.Create(TestIds.Apartment2Id, TestIds.BuildingId, "15", 3));
+        Db.Owners.Add(Owner.Create(TestIds.Apartment1Id, "Иванов Иван Иванович", "+79001234567"));
+        await Db.SaveChangesAsync();
     }
 
-    public void SeedMeterReadingMay2026()
+    public async Task SeedMeterReadingMay2026Async()
     {
-        MeterReadings.Items.Add(
+        Db.MeterReadings.Add(
             MeterReading.Create(TestIds.Reading1Id, TestIds.Apartment1Id, 2026, 5, 1000m));
+        await Db.SaveChangesAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await Db.DisposeAsync();
     }
 }

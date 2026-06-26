@@ -5,10 +5,12 @@
 ## Backend
 
 - **Entities**: `Building`, `Apartment`, `Owner` в `1 Entities/`
-- **Repositories**: `IBuildingRepository`, `IApartmentRepository`, `IOwnerRepository`
+- **Data access**: `IDbContext` в handlers (CRUD, один `SaveChangesAsync` на сценарий); `IApartmentQueries` — `ListByBuildingWithOwnersAsync`
 - **UseCases**: `Handlers/Building/`, `Handlers/Apartment/`, `Handlers/Owner/`
 - **API**: `BuildingsController`, `ApartmentsController`
 - **Persistence**: таблицы `buildings`, `apartments`, `owners`; миграции `AddBuildingsApartmentsOwners`, `SeedDirectoryDemoData`
+
+CRUD (`Create`/`Update`/`Delete` домов и квартир, upsert владельца) — через `IDbContext` в handlers. Сложная выборка квартир с владельцами и статусом показаний — `IApartmentQueries.ListByBuildingWithOwnersAsync`.
 
 ## Frontend (FSD)
 

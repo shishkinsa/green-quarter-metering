@@ -3,6 +3,8 @@ using GQ.WebApi.UseCases.Handlers.Apartment.Commands.DeleteApartment;
 
 using GQ.WebApi.Tests.Unit.TestDoubles;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace GQ.WebApi.Tests.Unit.Handlers.Apartment;
 
 public sealed class DeleteApartmentCommandHandlerTests
@@ -10,23 +12,23 @@ public sealed class DeleteApartmentCommandHandlerTests
     [Fact]
     public async Task DeleteApartmentCommandHandler_RemovesApartmentAndReadings()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
-        context.SeedMeterReadingMay2026();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
+        await context.SeedMeterReadingMay2026Async();
 
-        DeleteApartmentCommandHandler handler = new(context.Apartments, context.MeterReadings);
+        DeleteApartmentCommandHandler handler = new(context.Db);
 
         await handler.Handle(new DeleteApartmentCommand(TestIds.Apartment1Id), CancellationToken.None);
 
-        Assert.Single(context.Apartments.Items);
-        Assert.Empty(context.MeterReadings.Items);
+        Assert.Equal(1, await context.Db.Apartments.CountAsync());
+        Assert.Equal(0, await context.Db.MeterReadings.CountAsync());
     }
 
     [Fact]
     public async Task DeleteApartmentCommandHandler_WhenNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
-        DeleteApartmentCommandHandler handler = new(context.Apartments, context.MeterReadings);
+        await using HandlerTestContext context = new();
+        DeleteApartmentCommandHandler handler = new(context.Db);
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
             () => handler.Handle(new DeleteApartmentCommand(Guid.NewGuid()), CancellationToken.None));

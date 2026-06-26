@@ -4,6 +4,8 @@ using GQ.WebApi.UseCases.Handlers.Apartment.Commands.CreateApartment.Validators;
 
 using GQ.WebApi.Tests.Unit.TestDoubles;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace GQ.WebApi.Tests.Unit.Handlers.Apartment;
 
 public sealed class CreateApartmentCommandHandlerTests
@@ -11,12 +13,11 @@ public sealed class CreateApartmentCommandHandlerTests
     [Fact]
     public async Task CreateApartmentCommandHandler_CreatesApartment()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         CreateApartmentCommandHandler handler = new(
-            context.Buildings,
-            context.Apartments,
+            context.Db,
             new CreateApartmentCommandValidator());
 
         CreateApartmentResponse response = await handler.Handle(
@@ -24,16 +25,15 @@ public sealed class CreateApartmentCommandHandlerTests
             CancellationToken.None);
 
         Assert.Equal("20", response.Item.Number);
-        Assert.Equal(3, context.Apartments.Items.Count);
+        Assert.Equal(3, await context.Db.Apartments.CountAsync());
     }
 
     [Fact]
     public async Task CreateApartmentCommandHandler_WhenBuildingNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
+        await using HandlerTestContext context = new();
         CreateApartmentCommandHandler handler = new(
-            context.Buildings,
-            context.Apartments,
+            context.Db,
             new CreateApartmentCommandValidator());
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
@@ -45,12 +45,11 @@ public sealed class CreateApartmentCommandHandlerTests
     [Fact]
     public async Task CreateApartmentCommandHandler_WhenDuplicateNumber_ThrowsConflict()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         CreateApartmentCommandHandler handler = new(
-            context.Buildings,
-            context.Apartments,
+            context.Db,
             new CreateApartmentCommandValidator());
 
         await Assert.ThrowsAsync<UseCaseConflictException>(

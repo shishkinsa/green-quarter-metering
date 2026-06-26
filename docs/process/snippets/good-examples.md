@@ -7,7 +7,7 @@ Few-shot примеры «хорошего» стиля проекта. Допо
 ```csharp
 namespace GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
 
-public sealed class CreateBuildingCommandHandler(IBuildingRepository repository)
+public sealed class CreateBuildingCommandHandler(IDbContext db)
     : IRequestHandler<CreateBuildingCommand, CreateBuildingResponse>
 {
     public async Task<CreateBuildingResponse> Handle(
@@ -15,7 +15,8 @@ public sealed class CreateBuildingCommandHandler(IBuildingRepository repository)
         CancellationToken cancellationToken = default)
     {
         var entity = Building.Create(command.Name, command.Address);
-        await repository.AddAsync(entity, cancellationToken);
+        db.Buildings.Add(entity);
+        await db.SaveChangesAsync(cancellationToken);
         return new CreateBuildingResponse(BuildingMappings.ToDto(entity));
     }
 }

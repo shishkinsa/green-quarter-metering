@@ -78,7 +78,9 @@ flowchart TB
 
 **Зависимости.** Ссылается на `Entities` при типах в сигнатурах. Ссылка на **Microsoft.EntityFrameworkCore** здесь — **осознанное отклонение** от «строгой» чистой архитектуры: допускается, если контракты персистентности выражены с участием типов EF (например абстракция вокруг `DbContext`). Альтернатива без EF в этом проекте — перенос низкоуровневых контрактов ближе к `UseCases` и оставление в `Infrastructure.Interfaces` только технически нейтральных интерфейсов; выбор фиксируется на уровне сервиса и не смешивается в одном решении произвольно.
 
-**Примеры типов.** `IUnitOfWork`, `IExampleRepository`, `IMessagePublisher`, интерфейс доступа к данным поверх ORM.
+**Примеры типов.** `IDbContext`, `IApartmentQueries`, `IMeterReadingQueries`, `IMessagePublisher`.
+
+**Паттерн доступа к данным (CNT_GQ_WebAPI).** Handlers в `UseCases` инжектят `IDbContext` для CRUD и одного `SaveChangesAsync` на сценарий. Именованные `I*Queries` — только для нетривиальных выборок (join, агрегаты, read models). CRUD-репозитории на сущность не используются.
 
 ---
 
@@ -161,7 +163,7 @@ Handlers/
 
 **Технологии.** Для PostgreSQL: пакет `Npgsql.EntityFrameworkCore.PostgreSQL` (и связанные версии EF Core). Проект `<Prefix>.<Сервис>.RabbitMQ.Implementation` — конкретные publisher/consumer; при появлении **outbox/inbox** паттерн описывается в документации сервиса (спека допускает расширение без смены нумерации папок).
 
-**Примеры типов.** `AppDbContext`, конфигурации `IEntityTypeConfiguration<>`, `RabbitMqEventPublisher`.
+**Примеры типов.** `AppDbContext`, конфигурации `IEntityTypeConfiguration<>`, `ApartmentQueries`, `MeterReadingQueries`.
 
 ---
 

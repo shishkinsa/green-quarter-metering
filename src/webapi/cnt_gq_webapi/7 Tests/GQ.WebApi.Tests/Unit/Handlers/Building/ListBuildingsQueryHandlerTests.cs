@@ -9,10 +9,10 @@ public sealed class ListBuildingsQueryHandlerTests
     [Fact]
     public async Task ListBuildingsQueryHandler_ReturnsBuildings()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
-        ListBuildingsQueryHandler handler = new(context.Buildings);
+        ListBuildingsQueryHandler handler = new(context.Db);
         ListBuildingsResponse response = await handler.Handle(new ListBuildingsQuery(), CancellationToken.None);
 
         Assert.Single(response.Items);

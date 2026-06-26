@@ -2,11 +2,14 @@ using FluentValidation;
 using FluentValidation.Results;
 
 using GQ.WebApi.Entities;
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
+using GQ.WebApi.Infrastructure.Interfaces.Queries;
 using GQ.WebApi.UseCases.Exceptions;
 using GQ.WebApi.UseCases.Handlers.MeterReading.Mappings;
 
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
 
 using MeterReadingEntity = GQ.WebApi.Entities.MeterReading;
 
@@ -18,8 +21,8 @@ namespace GQ.WebApi.UseCases.Handlers.MeterReading.Commands.SubmitMeterReading;
 /// <exception cref="UseCaseNotFoundException">Квартира не найдена.</exception>
 /// <exception cref="ValidationException">Показание меньше предыдущего или понижение в том же месяце.</exception>
 public sealed class SubmitMeterReadingCommandHandler(
-    IApartmentRepository apartmentRepository,
-    IMeterReadingRepository meterReadingRepository,
+    IDbContext db,
+    IMeterReadingQueries meterReadingQueries,
     IValidator<SubmitMeterReadingCommand> validator)
     : IRequestHandler<SubmitMeterReadingCommand, SubmitMeterReadingResponse>
 {
@@ -29,9 +32,10 @@ public sealed class SubmitMeterReadingCommandHandler(
     {
         await validator.ValidateAndThrowAsync(command, cancellationToken);
 
-        Entities.Apartment apartment = await apartmentRepository.GetByIdAsync(command.ApartmentId, cancellationToken) ?? throw new UseCaseNotFoundException($"Apartment '{command.ApartmentId}' was not found.");
+        _ = await db.Apartments.FirstOrDefaultAsync(x => x.Id == command.ApartmentId, cancellationToken)
+            ?? throw new UseCaseNotFoundException($"Apartment '{command.ApartmentId}' was not found.");
 
-        decimal? maxBefore = await meterReadingRepository.GetMaxValueBeforePeriodAsync(
+        decimal? maxBefore = await meterReadingQueries.GetMaxValueBeforePeriodAsync(
             command.ApartmentId,
             command.PeriodYear,
             command.PeriodMonth,
@@ -47,10 +51,10 @@ public sealed class SubmitMeterReadingCommandHandler(
             });
         }
 
-        MeterReadingEntity? existing = await meterReadingRepository.GetByApartmentAndPeriodAsync(
-            command.ApartmentId,
-            command.PeriodYear,
-            command.PeriodMonth,
+        MeterReadingEntity? existing = await db.MeterReadings.FirstOrDefaultAsync(
+            x => x.ApartmentId == command.ApartmentId
+                 && x.PeriodYear == command.PeriodYear
+                 && x.PeriodMonth == command.PeriodMonth,
             cancellationToken);
 
         if(existing is not null)
@@ -66,7 +70,7 @@ public sealed class SubmitMeterReadingCommandHandler(
             }
 
             existing.UpdateValue(command.Value);
-            await meterReadingRepository.UpdateAsync(existing, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
             return new SubmitMeterReadingResponse(MeterReadingMappings.ToDto(existing), Created: false);
         }
 
@@ -75,7 +79,8 @@ public sealed class SubmitMeterReadingCommandHandler(
             command.PeriodYear,
             command.PeriodMonth,
             command.Value);
-        await meterReadingRepository.AddAsync(created, cancellationToken);
+        db.MeterReadings.Add(created);
+        await db.SaveChangesAsync(cancellationToken);
         return new SubmitMeterReadingResponse(MeterReadingMappings.ToDto(created), Created: true);
     }
 }

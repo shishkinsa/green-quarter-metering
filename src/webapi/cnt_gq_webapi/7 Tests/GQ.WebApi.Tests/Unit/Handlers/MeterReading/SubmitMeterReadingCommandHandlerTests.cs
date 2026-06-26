@@ -6,6 +6,8 @@ using GQ.WebApi.UseCases.Handlers.MeterReading.Commands.SubmitMeterReading.Valid
 
 using GQ.WebApi.Tests.Unit.TestDoubles;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace GQ.WebApi.Tests.Unit.Handlers.MeterReading;
 
 public sealed class SubmitMeterReadingCommandHandlerTests
@@ -13,8 +15,8 @@ public sealed class SubmitMeterReadingCommandHandlerTests
     [Fact]
     public async Task SubmitMeterReadingCommandHandler_CreatesReading()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         SubmitMeterReadingCommandHandler handler = CreateHandler(context);
         SubmitMeterReadingResponse response = await handler.Handle(
@@ -23,15 +25,15 @@ public sealed class SubmitMeterReadingCommandHandlerTests
 
         Assert.True(response.Created);
         Assert.Equal(500m, response.Item.Value);
-        Assert.Single(context.MeterReadings.Items);
+        Assert.Equal(1, await context.Db.MeterReadings.CountAsync());
     }
 
     [Fact]
     public async Task SubmitMeterReadingCommandHandler_UpdatesSameMonth()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
-        context.SeedMeterReadingMay2026();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
+        await context.SeedMeterReadingMay2026Async();
 
         SubmitMeterReadingCommandHandler handler = CreateHandler(context);
         SubmitMeterReadingResponse response = await handler.Handle(
@@ -45,9 +47,9 @@ public sealed class SubmitMeterReadingCommandHandlerTests
     [Fact]
     public async Task SubmitMeterReadingCommandHandler_WhenLessThanPrevious_ThrowsValidation()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
-        context.SeedMeterReadingMay2026();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
+        await context.SeedMeterReadingMay2026Async();
 
         SubmitMeterReadingCommandHandler handler = CreateHandler(context);
 
@@ -60,7 +62,7 @@ public sealed class SubmitMeterReadingCommandHandlerTests
     [Fact]
     public async Task SubmitMeterReadingCommandHandler_WhenApartmentNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
+        await using HandlerTestContext context = new();
         SubmitMeterReadingCommandHandler handler = CreateHandler(context);
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
@@ -74,8 +76,8 @@ public sealed class SubmitMeterReadingCommandHandlerTests
     [InlineData(13)]
     public async Task SubmitMeterReadingCommandHandler_WhenInvalidMonth_ThrowsValidation(int periodMonth)
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         SubmitMeterReadingCommandHandler handler = CreateHandler(context);
 
@@ -88,8 +90,8 @@ public sealed class SubmitMeterReadingCommandHandlerTests
     private static SubmitMeterReadingCommandHandler CreateHandler(HandlerTestContext context)
     {
         return new SubmitMeterReadingCommandHandler(
-            context.Apartments,
-            context.MeterReadings,
+            context.Db,
+            context.MeterReadingQueries,
             new SubmitMeterReadingCommandValidator());
     }
 }

@@ -1,5 +1,5 @@
 using GQ.WebApi.Entities;
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.Queries;
 using GQ.WebApi.UseCases.Handlers.MeterReading.Dto;
 
 using MeterReadingEntity = GQ.WebApi.Entities.MeterReading;

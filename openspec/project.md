@@ -29,13 +29,14 @@ SPDF: [docs/README.md](../docs/README.md) · [manifest.yaml](../manifest.yaml)
 ### Architecture Patterns
 
 - **Backend**: Clean Architecture, CQRS через MediatR — см. [backend.md](../docs/architecture/specs/backend.md)
+- **Data access**: `IDbContext` в handlers (один `SaveChangesAsync` на сценарий); `I*Queries` только для сложных выборок — без CRUD-репозиториев на сущность
 - **Frontend**: Feature-Sliced Design — см. [frontend.md](../docs/architecture/specs/frontend.md)
 - **C4 / контейнеры**: [docs/process/context/containers.md](../docs/process/context/containers.md), LikeC4 в `docs/architecture/diagram/`
 - **Стратегические решения**: ADR в `docs/architecture/adr/` — не дублировать в capability specs
 
 ### Testing Strategy
 
-- Unit-тесты для домена и UseCase handlers
+- Unit-тесты для домена и UseCase handlers (in-memory EF + `IDbContext`)
 - Integration-тесты для REST endpoints (`WebApplicationFactory`, InMemory БД)
 - Проверка: `.\scripts\verify.ps1`
 

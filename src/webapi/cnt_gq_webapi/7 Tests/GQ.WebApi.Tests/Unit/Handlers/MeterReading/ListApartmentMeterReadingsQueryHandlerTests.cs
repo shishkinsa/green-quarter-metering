@@ -10,11 +10,11 @@ public sealed class ListApartmentMeterReadingsQueryHandlerTests
     [Fact]
     public async Task ListApartmentMeterReadingsQueryHandler_ReturnsHistory()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
-        context.SeedMeterReadingMay2026();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
+        await context.SeedMeterReadingMay2026Async();
 
-        ListApartmentMeterReadingsQueryHandler handler = new(context.Apartments, context.MeterReadings);
+        ListApartmentMeterReadingsQueryHandler handler = new(context.Db);
         ListApartmentMeterReadingsResponse response = await handler.Handle(
             new ListApartmentMeterReadingsQuery(TestIds.Apartment1Id),
             CancellationToken.None);
@@ -29,8 +29,8 @@ public sealed class ListApartmentMeterReadingsQueryHandlerTests
     [Fact]
     public async Task ListApartmentMeterReadingsQueryHandler_WhenApartmentNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
-        ListApartmentMeterReadingsQueryHandler handler = new(context.Apartments, context.MeterReadings);
+        await using HandlerTestContext context = new();
+        ListApartmentMeterReadingsQueryHandler handler = new(context.Db);
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
             () => handler.Handle(new ListApartmentMeterReadingsQuery(Guid.NewGuid()), CancellationToken.None));

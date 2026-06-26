@@ -3,6 +3,8 @@ using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding.Validators;
 
 using GQ.WebApi.Tests.Unit.TestDoubles;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace GQ.WebApi.Tests.Unit.Handlers.Building;
 
 public sealed class CreateBuildingCommandHandlerTests
@@ -10,9 +12,9 @@ public sealed class CreateBuildingCommandHandlerTests
     [Fact]
     public async Task CreateBuildingCommandHandler_CreatesBuilding()
     {
-        HandlerTestContext context = new();
+        await using HandlerTestContext context = new();
         CreateBuildingCommandHandler handler = new(
-            context.Buildings,
+            context.Db,
             new CreateBuildingCommandValidator());
 
         CreateBuildingResponse response = await handler.Handle(
@@ -20,6 +22,6 @@ public sealed class CreateBuildingCommandHandlerTests
             CancellationToken.None);
 
         Assert.Equal("Корпус 2", response.Item.Name);
-        Assert.Single(context.Buildings.Items);
+        Assert.Equal(1, await context.Db.Buildings.CountAsync());
     }
 }

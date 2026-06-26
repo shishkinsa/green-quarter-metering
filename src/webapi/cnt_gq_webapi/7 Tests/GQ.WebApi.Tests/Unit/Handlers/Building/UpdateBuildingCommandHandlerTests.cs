@@ -11,11 +11,11 @@ public sealed class UpdateBuildingCommandHandlerTests
     [Fact]
     public async Task UpdateBuildingCommandHandler_UpdatesBuilding()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
         UpdateBuildingCommandHandler handler = new(
-            context.Buildings,
+            context.Db,
             new UpdateBuildingCommandValidator());
 
         UpdateBuildingResponse response = await handler.Handle(
@@ -29,9 +29,9 @@ public sealed class UpdateBuildingCommandHandlerTests
     [Fact]
     public async Task UpdateBuildingCommandHandler_WhenBuildingNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
+        await using HandlerTestContext context = new();
         UpdateBuildingCommandHandler handler = new(
-            context.Buildings,
+            context.Db,
             new UpdateBuildingCommandValidator());
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(

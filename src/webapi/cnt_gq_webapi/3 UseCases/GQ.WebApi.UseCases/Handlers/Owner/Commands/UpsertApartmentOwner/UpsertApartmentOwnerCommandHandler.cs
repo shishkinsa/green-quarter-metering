@@ -1,11 +1,13 @@
 using FluentValidation;
 
 using GQ.WebApi.Entities;
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
 using GQ.WebApi.UseCases.Exceptions;
 using GQ.WebApi.UseCases.Handlers.Building.Mappings;
 
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
 
 using OwnerEntity = GQ.WebApi.Entities.Owner;
 
@@ -16,8 +18,7 @@ namespace GQ.WebApi.UseCases.Handlers.Owner.Commands.UpsertApartmentOwner;
 /// </summary>
 /// <exception cref="UseCaseNotFoundException">Квартира не найдена.</exception>
 public sealed class UpsertApartmentOwnerCommandHandler(
-    IApartmentRepository apartmentRepository,
-    IOwnerRepository ownerRepository,
+    IDbContext db,
     IValidator<UpsertApartmentOwnerCommand> validator)
     : IRequestHandler<UpsertApartmentOwnerCommand, UpsertApartmentOwnerResponse>
 {
@@ -27,18 +28,23 @@ public sealed class UpsertApartmentOwnerCommandHandler(
     {
         await validator.ValidateAndThrowAsync(command, cancellationToken);
 
-        Entities.Apartment apartment = await apartmentRepository.GetByIdAsync(command.ApartmentId, cancellationToken) ?? throw new UseCaseNotFoundException($"Apartment '{command.ApartmentId}' was not found.");
+        _ = await db.Apartments.FirstOrDefaultAsync(x => x.Id == command.ApartmentId, cancellationToken)
+            ?? throw new UseCaseNotFoundException($"Apartment '{command.ApartmentId}' was not found.");
 
-        OwnerEntity? existing = await ownerRepository.GetByApartmentIdAsync(command.ApartmentId, cancellationToken);
+        OwnerEntity? existing = await db.Owners.FirstOrDefaultAsync(
+            x => x.ApartmentId == command.ApartmentId,
+            cancellationToken);
+
         if(existing is null)
         {
             OwnerEntity owner = OwnerEntity.Create(command.ApartmentId, command.FullName, command.Phone);
-            await ownerRepository.AddAsync(owner, cancellationToken);
+            db.Owners.Add(owner);
+            await db.SaveChangesAsync(cancellationToken);
             return new UpsertApartmentOwnerResponse(DirectoryMappings.ToDto(owner));
         }
 
         existing.Update(command.FullName, command.Phone);
-        await ownerRepository.UpdateAsync(existing, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
         return new UpsertApartmentOwnerResponse(DirectoryMappings.ToDto(existing));
     }
 }

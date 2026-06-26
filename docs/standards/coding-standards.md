@@ -719,12 +719,14 @@ public sealed class CreateBuildingCommandHandler : IRequestHandler<CreateBuildin
 
 ```csharp
 /// <summary>
-/// Контракт чтения и записи сущностей <see cref="Building"/>.
+/// Именованные запросы к данным квартир (сложные выборки).
 /// </summary>
-public interface IBuildingRepository
+public interface IApartmentQueries
 {
-    /// <summary>Возвращает все дома, отсортированные по наименованию.</summary>
-    Task<IReadOnlyList<Building>> ListAsync(CancellationToken cancellationToken);
+    /// <summary>Возвращает квартиры дома вместе с владельцами.</summary>
+    Task<IReadOnlyList<ApartmentWithOwnerReadModel>> ListByBuildingWithOwnersAsync(
+        Guid buildingId,
+        CancellationToken cancellationToken);
 }
 ```
 

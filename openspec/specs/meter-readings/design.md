@@ -66,9 +66,17 @@
 
 ### 7. Паттерн реализации
 
-**Backend:** `MeterReading` в Entities; `IMeterReadingRepository`; handlers `SubmitMeterReading`, `ListBuildingMeterReadings`; методы в `ApartmentsController` / `BuildingsController`.
+**Backend:** `MeterReading` в Entities; `IDbContext` для CRUD; `IMeterReadingQueries` для `GetMaxValueBeforePeriodAsync` и `ListByBuildingAndPeriodAsync`; handlers `SubmitMeterReading`, `ListBuildingMeterReadings`, `ListApartmentMeterReadings`; методы в `ApartmentsController` / `BuildingsController`.
 
 **Frontend:** FSD `entities/meter-reading`, `features/submit-meter-reading`, `pages/meter-readings`.
+
+### 8. Доступ к данным без CRUD-репозиториев
+
+**Решение:** handlers используют `IDbContext` (EF Core как Unit of Work); нетривиальные выборки — в `I*Queries` (`Infrastructure.Interfaces/Queries/`).
+
+**Причина:** EF Core уже реализует UoW + generic repository; отдельный `I*Repository` на сущность дублировал API без выгоды.
+
+**Альтернатива:** репозиторий на каждую сущность — отклонена при рефакторинге 2026-06.
 
 ## Risks / Trade-offs
 

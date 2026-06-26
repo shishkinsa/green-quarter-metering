@@ -7,8 +7,8 @@
 ## 2. Backend (Clean Architecture)
 
 - [ ] 2.1 `1 Entities` — доменная сущность с фабрикой `Create()`
-- [ ] 2.2 `2 Infrastructure.Interfaces` — `I{Name}Repository`
-- [ ] 2.3 `5 Infrastructure.Implementation` — репозиторий + EF-конфигурация
+- [ ] 2.2 `2 Infrastructure.Interfaces` — `IDbContext`; при сложных выборках — `I{Name}Queries`
+- [ ] 2.3 `5 Infrastructure.Implementation` — EF-конфигурация + query-сервисы (`Queries/`)
 - [ ] 2.4 `3 UseCases` — Command/Query + Handler + Validator + Dto + Mappings
 - [ ] 2.5 `6 WebApp` — Controller (тонкий, Requestum)
 - [ ] 2.6 Миграция EF: `.\scripts\ef-migrate.ps1 -Action add -MigrationName Add{Name}`

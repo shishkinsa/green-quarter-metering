@@ -1,5 +1,5 @@
 using GQ.WebApi.Entities;
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.Queries;
 using GQ.WebApi.UseCases.Handlers.Building.Dto;
 
 using BuildingEntity = GQ.WebApi.Entities.Building;

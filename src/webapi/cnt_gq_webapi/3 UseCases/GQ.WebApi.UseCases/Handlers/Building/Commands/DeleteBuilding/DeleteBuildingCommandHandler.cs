@@ -1,7 +1,9 @@
-using GQ.WebApi.Infrastructure.Interfaces.Repositories;
+using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
 using GQ.WebApi.UseCases.Exceptions;
 
 using MediatR;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace GQ.WebApi.UseCases.Handlers.Building.Commands.DeleteBuilding;
 
@@ -9,29 +11,30 @@ namespace GQ.WebApi.UseCases.Handlers.Building.Commands.DeleteBuilding;
 /// Удаляет дом вместе с квартирами, владельцами и показаниями.
 /// </summary>
 /// <exception cref="UseCaseNotFoundException">Дом не найден.</exception>
-public sealed class DeleteBuildingCommandHandler(
-    IBuildingRepository buildingRepository,
-    IApartmentRepository apartmentRepository,
-    IMeterReadingRepository meterReadingRepository)
+public sealed class DeleteBuildingCommandHandler(IDbContext db)
     : IRequestHandler<DeleteBuildingCommand>
 {
     public async Task Handle(DeleteBuildingCommand command, CancellationToken cancellationToken)
     {
-        Entities.Building building = await buildingRepository.GetByIdAsync(command.Id, cancellationToken)
+        Entities.Building building = await db.Buildings.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
             ?? throw new UseCaseNotFoundException($"Building '{command.Id}' was not found.");
 
-        IReadOnlyList<Guid> apartmentIds = await apartmentRepository.ListIdsByBuildingAsync(
-            command.Id,
-            cancellationToken);
+        List<Entities.Apartment> apartments = await db.Apartments
+            .Where(x => x.BuildingId == command.Id)
+            .ToListAsync(cancellationToken);
 
-        foreach(Guid apartmentId in apartmentIds)
+        if(apartments.Count > 0)
         {
-            await meterReadingRepository.DeleteByApartmentAsync(apartmentId, cancellationToken);
-            Entities.Apartment apartment = await apartmentRepository.GetByIdAsync(apartmentId, cancellationToken)
-                ?? throw new InvalidOperationException($"Apartment '{apartmentId}' was not found.");
-            await apartmentRepository.DeleteAsync(apartment, cancellationToken);
+            HashSet<Guid> apartmentIds = [.. apartments.Select(x => x.Id)];
+            List<Entities.MeterReading> readings = await db.MeterReadings
+                .Where(x => apartmentIds.Contains(x.ApartmentId))
+                .ToListAsync(cancellationToken);
+
+            db.MeterReadings.RemoveRange(readings);
+            db.Apartments.RemoveRange(apartments);
         }
 
-        await buildingRepository.DeleteAsync(building, cancellationToken);
+        db.Buildings.Remove(building);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

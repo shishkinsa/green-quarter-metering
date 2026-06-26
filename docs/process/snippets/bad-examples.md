@@ -18,14 +18,14 @@ public async Task<IActionResult> Create([FromBody] CreateBuildingRequest request
 
 Логика — в `CommandHandler`, контроллер только диспетчеризует MediatR.
 
-## Backend: прямой DbContext в UseCases
+## Backend: прямой AppDbContext в UseCases
 
 ```csharp
-// ❌ Плохо — UseCases не ссылается на EF
+// ❌ Плохо — UseCases не ссылается на Infrastructure.Implementation
 public class CreateBuildingCommandHandler(AppDbContext db) { ... }
 ```
 
-Используй `IBuildingRepository` из `Infrastructure.Interfaces`.
+Используй `IDbContext` из `Infrastructure.Interfaces`; сложные выборки — `I*Queries`.
 
 ## Backend: изменение API без OpenAPI
 

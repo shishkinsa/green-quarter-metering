@@ -10,10 +10,10 @@ public sealed class ListApartmentsWithOwnersQueryHandlerTests
     [Fact]
     public async Task ListApartmentsWithOwnersQueryHandler_ReturnsApartments()
     {
-        HandlerTestContext context = new();
-        context.SeedDirectory();
+        await using HandlerTestContext context = new();
+        await context.SeedDirectoryAsync();
 
-        ListApartmentsWithOwnersQueryHandler handler = new(context.Buildings, context.Apartments);
+        ListApartmentsWithOwnersQueryHandler handler = new(context.Db, context.ApartmentQueries);
         ListApartmentsWithOwnersResponse response = await handler.Handle(
             new ListApartmentsWithOwnersQuery(TestIds.BuildingId),
             CancellationToken.None);
@@ -25,8 +25,8 @@ public sealed class ListApartmentsWithOwnersQueryHandlerTests
     [Fact]
     public async Task ListApartmentsWithOwnersQueryHandler_WhenBuildingNotFound_ThrowsNotFound()
     {
-        HandlerTestContext context = new();
-        ListApartmentsWithOwnersQueryHandler handler = new(context.Buildings, context.Apartments);
+        await using HandlerTestContext context = new();
+        ListApartmentsWithOwnersQueryHandler handler = new(context.Db, context.ApartmentQueries);
 
         await Assert.ThrowsAsync<UseCaseNotFoundException>(
             () => handler.Handle(new ListApartmentsWithOwnersQuery(Guid.NewGuid()), CancellationToken.None));
