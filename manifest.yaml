@@ -51,14 +51,16 @@ capabilities:
     openapi_paths:
       - /health
       - /buildings
+      - /buildings/{buildingId}
       - /buildings/{buildingId}/apartments
+      - /apartments/{apartmentId}
       - /apartments/{apartmentId}/owner
     backend: src/webapi/cnt_gq_webapi/3 UseCases/GQ.WebApi.UseCases/Handlers/Building
-    frontend: src/frontend/cnt_gq_web/src/entities/building
+    frontend: src/frontend/cnt_gq_web/src/pages/buildings
   meter-readings:
-    spec: openspec/changes/add-reading-input/specs/meter-readings/spec.md
-    design: openspec/changes/add-reading-input/design.md
-    scenario_coverage: openspec/changes/add-reading-input/specs/meter-readings/scenario-coverage.txt
+    spec: openspec/specs/meter-readings/spec.md
+    design: openspec/specs/meter-readings/design.md
+    scenario_coverage: openspec/specs/meter-readings/scenario-coverage.txt
     business: docs/requirements/business/capabilities.md#meter-readings
     constraints:
       - docs/requirements/constraints/performance.md
@@ -66,4 +68,8 @@ capabilities:
       - /apartments/{apartmentId}/meter-readings
       - /buildings/{buildingId}/meter-readings
     backend: src/webapi/cnt_gq_webapi/3 UseCases/GQ.WebApi.UseCases/Handlers/MeterReading
-    frontend: src/frontend/cnt_gq_web/src/entities/meter-reading
+    frontend: src/frontend/cnt_gq_web/src/pages/apartment-meter-readings
+  frontend-fsd:
+    spec: openspec/specs/frontend-fsd/spec.md
+    business: docs/architecture/specs/frontend.md
+    frontend: src/frontend/cnt_gq_web/src

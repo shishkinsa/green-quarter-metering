@@ -31,5 +31,5 @@ status: draft
 | US-031 | энергетик | видеть, кто сдал показания по дому за месяц | контролировать полноту сдачи |
 | US-032 | энергетик | получать отказ при показании меньше предыдущего | отсекать ошибки и аномалии ввода |
 
-- Spec: [openspec/changes/add-reading-input/specs/meter-readings/spec.md](../../../openspec/changes/add-reading-input/specs/meter-readings/spec.md)
+- Spec: [openspec/specs/meter-readings/spec.md](../../../openspec/specs/meter-readings/spec.md)
 - Код: `entities/meter-reading`, `features/submit-meter-reading`, `Handlers/MeterReading/`, `pages/meter-readings`

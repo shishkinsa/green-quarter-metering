@@ -1,42 +1,12 @@
-export interface Building {
-  id: string;
-  name: string;
-  address: string | null;
-}
+import type { components } from '@/shared/api/generated/openapi';
 
-export interface ApartmentWithOwner {
-  id: string;
-  buildingId: string;
-  number: string;
-  floor: number | null;
-  ownerId: string | null;
-  ownerFullName: string | null;
-  ownerPhone: string | null;
-}
+export type Building = components['schemas']['BuildingDto'];
+export type ApartmentWithOwner = components['schemas']['ApartmentWithOwnerDto'];
+export type Owner = components['schemas']['OwnerDto'];
 
-export interface Owner {
-  id: string;
-  apartmentId: string;
-  fullName: string;
-  phone: string | null;
-}
-
-export interface ListBuildingsResponse {
-  items: Building[];
-}
-
-export interface ListApartmentsWithOwnersResponse {
-  items: ApartmentWithOwner[];
-}
-
-export interface CreateBuildingResponse {
-  item: Building;
-}
-
-export interface CreateApartmentResponse {
-  item: ApartmentWithOwner;
-}
-
-export interface UpsertApartmentOwnerResponse {
-  item: Owner;
-}
+export type ListBuildingsResponse = components['schemas']['ListBuildingsResponse'];
+export type ListApartmentsWithOwnersResponse = components['schemas']['ListApartmentsWithOwnersResponse'];
+export type CreateBuildingResponse = components['schemas']['CreateBuildingResponse'];
+export type UpdateBuildingResponse = components['schemas']['UpdateBuildingResponse'];
+export type CreateApartmentResponse = components['schemas']['CreateApartmentResponse'];
+export type UpsertApartmentOwnerResponse = components['schemas']['UpsertApartmentOwnerResponse'];

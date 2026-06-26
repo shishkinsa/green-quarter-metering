@@ -47,4 +47,12 @@ public interface IMeterReadingRepository
         int periodYear,
         int periodMonth,
         CancellationToken cancellationToken);
+
+    /// <summary>Возвращает все показания квартиры, отсортированные по периоду по убыванию.</summary>
+    Task<IReadOnlyList<MeterReading>> ListByApartmentAsync(
+        Guid apartmentId,
+        CancellationToken cancellationToken);
+
+    /// <summary>Удаляет все показания квартиры.</summary>
+    Task DeleteByApartmentAsync(Guid apartmentId, CancellationToken cancellationToken);
 }

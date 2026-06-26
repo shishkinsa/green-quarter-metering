@@ -79,4 +79,23 @@ internal sealed class FakeMeterReadingRepository(
 
         return Task.FromResult<IReadOnlyList<BuildingMeterReadingStatusReadModel>>(result);
     }
+
+    public Task<IReadOnlyList<MeterReading>> ListByApartmentAsync(
+        Guid apartmentId,
+        CancellationToken cancellationToken = default)
+    {
+        IReadOnlyList<MeterReading> items = Items
+            .Where(x => x.ApartmentId == apartmentId)
+            .OrderByDescending(x => x.PeriodYear)
+            .ThenByDescending(x => x.PeriodMonth)
+            .ToList();
+
+        return Task.FromResult(items);
+    }
+
+    public Task DeleteByApartmentAsync(Guid apartmentId, CancellationToken cancellationToken = default)
+    {
+        Items.RemoveAll(x => x.ApartmentId == apartmentId);
+        return Task.CompletedTask;
+    }
 }

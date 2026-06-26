@@ -58,6 +58,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options): DbCont
             entity.ToTable("meter_readings");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Value).HasPrecision(18, 3);
+            entity.Property(x => x.SubmittedAt).IsRequired();
             entity.HasIndex(x => new { x.ApartmentId, x.PeriodYear, x.PeriodMonth }).IsUnique();
             entity.HasOne<Apartment>()
                 .WithMany()

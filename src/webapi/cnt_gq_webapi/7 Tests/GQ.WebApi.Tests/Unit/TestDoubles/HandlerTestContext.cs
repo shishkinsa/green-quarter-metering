@@ -23,6 +23,7 @@ internal sealed class HandlerTestContext
         Owners.Items.Clear();
         Apartments = new FakeApartmentRepository(Owners);
         MeterReadings = new FakeMeterReadingRepository(Apartments, Owners);
+        Apartments.MeterReadings = MeterReadings;
     }
 
     public void SeedDirectory()

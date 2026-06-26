@@ -11,7 +11,10 @@ public sealed record ApartmentWithOwnerDto(
     int? Floor,
     Guid? OwnerId,
     string? OwnerFullName,
-    string? OwnerPhone);
+    string? OwnerPhone,
+    DateTimeOffset? LastReadingSubmittedAt,
+    decimal? LastReadingValue,
+    bool CurrentPeriodSubmitted);
 
 /// <summary>Владелец квартиры в ответе API.</summary>
 public sealed record OwnerDto(Guid Id, Guid ApartmentId, string FullName, string? Phone);

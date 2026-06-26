@@ -50,7 +50,8 @@ export interface paths {
         /** Обновить дом */
         put: operations["updateBuilding"];
         post?: never;
-        delete?: never;
+        /** Удалить дом */
+        delete: operations["deleteBuilding"];
         options?: never;
         head?: never;
         patch?: never;
@@ -69,6 +70,23 @@ export interface paths {
         /** Создать квартиру в доме */
         post: operations["createApartment"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/apartments/{apartmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Удалить квартиру */
+        delete: operations["deleteApartment"];
         options?: never;
         head?: never;
         patch?: never;
@@ -98,7 +116,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** История показаний по квартире */
+        get: operations["listApartmentMeterReadings"];
         put?: never;
         /** Передать или обновить показание по квартире */
         post: operations["submitMeterReading"];
@@ -152,6 +171,11 @@ export interface components {
             ownerId?: string | null;
             ownerFullName?: string | null;
             ownerPhone?: string | null;
+            /** Format: date-time */
+            lastReadingSubmittedAt?: string | null;
+            /** Format: decimal */
+            lastReadingValue?: number | null;
+            currentPeriodSubmitted?: boolean;
         };
         OwnerDto: {
             /** Format: uuid */
@@ -204,6 +228,8 @@ export interface components {
             periodMonth: number;
             /** Format: decimal */
             value: number;
+            /** Format: date-time */
+            submittedAt: string;
         };
         SubmitMeterReadingRequest: {
             periodYear: number;
@@ -225,6 +251,9 @@ export interface components {
         };
         ListBuildingMeterReadingsResponse: {
             items: components["schemas"]["BuildingMeterReadingStatusDto"][];
+        };
+        ListApartmentMeterReadingsResponse: {
+            items: components["schemas"]["MeterReadingDto"][];
         };
     };
     responses: never;
@@ -346,6 +375,33 @@ export interface operations {
             };
         };
     };
+    deleteBuilding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                buildingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Удалено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Не найдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     listApartmentsWithOwners: {
         parameters: {
             query?: never;
@@ -422,6 +478,33 @@ export interface operations {
             };
         };
     };
+    deleteApartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                apartmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Удалено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Не найдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     upsertApartmentOwner: {
         parameters: {
             query?: never;
@@ -452,6 +535,35 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Квартира не найдена */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listApartmentMeterReadings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                apartmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description История показаний */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListApartmentMeterReadingsResponse"];
+                };
             };
             /** @description Квартира не найдена */
             404: {

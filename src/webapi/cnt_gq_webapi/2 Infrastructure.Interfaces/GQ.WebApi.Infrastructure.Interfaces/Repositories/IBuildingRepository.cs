@@ -18,4 +18,7 @@ public interface IBuildingRepository
 
     /// <summary>Сохраняет изменения существующего дома.</summary>
     Task UpdateAsync(Building building, CancellationToken cancellationToken);
+
+    /// <summary>Удаляет дом.</summary>
+    Task DeleteAsync(Building building, CancellationToken cancellationToken);
 }

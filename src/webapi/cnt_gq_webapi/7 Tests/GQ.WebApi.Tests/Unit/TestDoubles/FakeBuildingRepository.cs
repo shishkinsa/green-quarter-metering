@@ -28,4 +28,10 @@ internal sealed class FakeBuildingRepository: IBuildingRepository
     {
         return Task.CompletedTask;
     }
+
+    public Task DeleteAsync(Building building, CancellationToken cancellationToken = default)
+    {
+        Items.Remove(building);
+        return Task.CompletedTask;
+    }
 }

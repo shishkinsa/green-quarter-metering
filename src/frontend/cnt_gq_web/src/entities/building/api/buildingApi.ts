@@ -4,28 +4,21 @@ import type {
   CreateBuildingResponse,
   ListApartmentsWithOwnersResponse,
   ListBuildingsResponse,
+  UpdateBuildingResponse,
   UpsertApartmentOwnerResponse,
 } from '@/entities/building/model/types';
 
-/**
- * Возвращает список домов.
- */
+/** Возвращает список домов. */
 export function fetchBuildings(): Promise<ListBuildingsResponse> {
   return apiFetch<ListBuildingsResponse>('/v1/buildings');
 }
 
-/**
- * Возвращает квартиры дома с данными владельцев.
- *
- * @param buildingId — идентификатор дома
- */
+/** Возвращает квартиры дома с данными владельцев и сводкой показаний. */
 export function fetchApartmentsWithOwners(buildingId: string): Promise<ListApartmentsWithOwnersResponse> {
   return apiFetch<ListApartmentsWithOwnersResponse>(`/v1/buildings/${buildingId}/apartments`);
 }
 
-/**
- * Создаёт дом.
- */
+/** Создаёт дом. */
 export function createBuilding(name: string, address: string | null): Promise<CreateBuildingResponse> {
   return apiFetch<CreateBuildingResponse>('/v1/buildings', {
     method: 'POST',
@@ -34,20 +27,21 @@ export function createBuilding(name: string, address: string | null): Promise<Cr
   });
 }
 
-/**
- * Обновляет дом.
- */
-export function updateBuilding(id: string, name: string, address: string | null): Promise<CreateBuildingResponse> {
-  return apiFetch<CreateBuildingResponse>(`/v1/buildings/${id}`, {
+/** Обновляет дом. */
+export function updateBuilding(id: string, name: string, address: string | null): Promise<UpdateBuildingResponse> {
+  return apiFetch<UpdateBuildingResponse>(`/v1/buildings/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, address }),
   });
 }
 
-/**
- * Создаёт квартиру в доме.
- */
+/** Удаляет дом. */
+export function deleteBuilding(id: string): Promise<void> {
+  return apiFetch<void>(`/v1/buildings/${id}`, { method: 'DELETE' });
+}
+
+/** Создаёт квартиру в доме. */
 export function createApartment(
   buildingId: string,
   number: string,
@@ -60,9 +54,12 @@ export function createApartment(
   });
 }
 
-/**
- * Назначает или обновляет владельца квартиры.
- */
+/** Удаляет квартиру. */
+export function deleteApartment(apartmentId: string): Promise<void> {
+  return apiFetch<void>(`/v1/apartments/${apartmentId}`, { method: 'DELETE' });
+}
+
+/** Назначает или обновляет владельца квартиры. */
 export function upsertApartmentOwner(
   apartmentId: string,
   fullName: string,

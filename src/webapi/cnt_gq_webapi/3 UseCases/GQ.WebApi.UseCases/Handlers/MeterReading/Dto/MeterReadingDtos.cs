@@ -6,7 +6,8 @@ public sealed record MeterReadingDto(
     Guid ApartmentId,
     int PeriodYear,
     int PeriodMonth,
-    decimal Value);
+    decimal Value,
+    DateTimeOffset SubmittedAt);
 
 /// <summary>DTO статуса сдачи показания по квартире.</summary>
 public sealed record BuildingMeterReadingStatusDto(

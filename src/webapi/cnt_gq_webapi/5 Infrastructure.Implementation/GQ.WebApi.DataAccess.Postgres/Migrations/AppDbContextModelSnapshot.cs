@@ -82,6 +82,9 @@ namespace GQ.WebApi.DataAccess.Postgres.Migrations
                     b.Property<int>("PeriodYear")
                         .HasColumnType("integer");
 
+                    b.Property<DateTimeOffset>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<decimal>("Value")
                         .HasPrecision(18, 3)
                         .HasColumnType("numeric(18,3)");

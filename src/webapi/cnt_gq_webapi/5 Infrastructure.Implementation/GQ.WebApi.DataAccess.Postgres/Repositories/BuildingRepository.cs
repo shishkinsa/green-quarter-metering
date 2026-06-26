@@ -35,4 +35,10 @@ public sealed class BuildingRepository(AppDbContext dbContext): IBuildingReposit
         dbContext.Buildings.Update(building);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task DeleteAsync(Building building, CancellationToken cancellationToken = default)
+    {
+        dbContext.Buildings.Remove(building);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

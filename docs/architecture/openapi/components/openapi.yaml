@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Зеленый квартал — Учёт электроэнергии API
-  version: 0.7.0
+  version: 0.8.0
   description: Канонический REST-контракт. Обновляйте синхронно с кодом WebAPI и клиента.
 
 servers:
@@ -55,6 +55,22 @@ paths:
           description: Ошибка валидации
 
   /buildings/{buildingId}:
+    delete:
+      operationId: deleteBuilding
+      summary: Удалить дом
+      tags: [Directories]
+      parameters:
+        - name: buildingId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Удалено
+        '404':
+          description: Не найдено
     put:
       operationId: updateBuilding
       summary: Обновить дом
@@ -136,6 +152,24 @@ paths:
         '409':
           description: Дубликат номера квартиры
 
+  /apartments/{apartmentId}:
+    delete:
+      operationId: deleteApartment
+      summary: Удалить квартиру
+      tags: [Directories]
+      parameters:
+        - name: apartmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Удалено
+        '404':
+          description: Не найдено
+
   /apartments/{apartmentId}/owner:
     put:
       operationId: upsertApartmentOwner
@@ -167,6 +201,26 @@ paths:
           description: Квартира не найдена
 
   /apartments/{apartmentId}/meter-readings:
+    get:
+      operationId: listApartmentMeterReadings
+      summary: История показаний по квартире
+      tags: [MeterReadings]
+      parameters:
+        - name: apartmentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: История показаний
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListApartmentMeterReadingsResponse'
+        '404':
+          description: Квартира не найдена
     post:
       operationId: submitMeterReading
       summary: Передать или обновить показание по квартире
@@ -296,6 +350,16 @@ components:
           type: string
           maxLength: 32
           nullable: true
+        lastReadingSubmittedAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastReadingValue:
+          type: number
+          format: decimal
+          nullable: true
+        currentPeriodSubmitted:
+          type: boolean
 
     OwnerDto:
       type: object
@@ -410,7 +474,7 @@ components:
 
     MeterReadingDto:
       type: object
-      required: [id, apartmentId, periodYear, periodMonth, value]
+      required: [id, apartmentId, periodYear, periodMonth, value, submittedAt]
       properties:
         id:
           type: string
@@ -427,6 +491,9 @@ components:
         value:
           type: number
           format: decimal
+        submittedAt:
+          type: string
+          format: date-time
 
     SubmitMeterReadingRequest:
       type: object
@@ -480,3 +547,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BuildingMeterReadingStatusDto'
+
+    ListApartmentMeterReadingsResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeterReadingDto'

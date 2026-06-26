@@ -12,7 +12,10 @@ public sealed record ApartmentWithOwnerReadModel(
     int? Floor,
     Guid? OwnerId,
     string? OwnerFullName,
-    string? OwnerPhone);
+    string? OwnerPhone,
+    DateTimeOffset? LastReadingSubmittedAt,
+    decimal? LastReadingValue,
+    bool CurrentPeriodSubmitted);
 
 /// <summary>
 /// Контракт чтения и записи квартир (<see cref="Apartment"/>).
@@ -39,4 +42,10 @@ public interface IApartmentRepository
 
     /// <summary>Сохраняет новую квартиру.</summary>
     Task AddAsync(Apartment apartment, CancellationToken cancellationToken);
+
+    /// <summary>Возвращает идентификаторы квартир дома.</summary>
+    Task<IReadOnlyList<Guid>> ListIdsByBuildingAsync(Guid buildingId, CancellationToken cancellationToken);
+
+    /// <summary>Удаляет квартиру.</summary>
+    Task DeleteAsync(Apartment apartment, CancellationToken cancellationToken);
 }

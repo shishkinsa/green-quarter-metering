@@ -23,7 +23,10 @@ internal static class DirectoryMappings
             model.Floor,
             model.OwnerId,
             model.OwnerFullName,
-            model.OwnerPhone);
+            model.OwnerPhone,
+            model.LastReadingSubmittedAt,
+            model.LastReadingValue,
+            model.CurrentPeriodSubmitted);
     }
 
     internal static OwnerDto ToDto(OwnerEntity owner)

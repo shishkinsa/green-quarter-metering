@@ -50,7 +50,10 @@ public sealed class CreateApartmentCommandHandler(
             apartment.Floor,
             null,
             null,
-            null);
+            null,
+            null,
+            null,
+            false);
 
         return new CreateApartmentResponse(item);
     }

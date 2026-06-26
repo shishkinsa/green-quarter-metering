@@ -1,9 +1,12 @@
+import { parseApiError } from './errors';
+
 /**
  * Базовый HTTP-клиент для вызовов `/api`.
  *
  * @param path — путь относительно `/api`
  * @param init — параметры fetch
  * @returns распарсенный JSON
+ * @throws {ApiError} при статусе ответа не 2xx
  */
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
@@ -15,7 +18,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    throw await parseApiError(response);
   }
 
   if (response.status === 204) {

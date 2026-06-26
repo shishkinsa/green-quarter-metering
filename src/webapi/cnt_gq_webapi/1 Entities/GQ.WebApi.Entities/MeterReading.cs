@@ -15,6 +15,8 @@ public sealed class MeterReading
 
     public decimal Value { get; private set; }
 
+    public DateTimeOffset SubmittedAt { get; private set; }
+
     private MeterReading()
     {
     }
@@ -39,13 +41,16 @@ public sealed class MeterReading
         ValidatePeriod(periodYear, periodMonth);
         ValidateValue(value);
 
+        DateTimeOffset submittedAt = DateTimeOffset.UtcNow;
+
         return new MeterReading
         {
             Id = id,
             ApartmentId = apartmentId,
             PeriodYear = periodYear,
             PeriodMonth = periodMonth,
-            Value = value
+            Value = value,
+            SubmittedAt = submittedAt
         };
     }
 
@@ -53,6 +58,7 @@ public sealed class MeterReading
     {
         ValidateValue(value);
         Value = value;
+        SubmittedAt = DateTimeOffset.UtcNow;
     }
 
     private static void ValidatePeriod(int periodYear, int periodMonth)

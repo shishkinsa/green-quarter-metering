@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Lightning } from '@element-plus/icons-vue';
+import { AppBreadcrumbs } from '@/widgets/app-breadcrumbs';
 </script>
 
 <template>
@@ -7,15 +8,12 @@ import { Lightning } from '@element-plus/icons-vue';
     <el-header class="header">
       <div class="brand">
         <el-icon :size="24"><Lightning /></el-icon>
-        <span>Зелёный квартал — Учёт электроэнергии</span>
+        <router-link to="/" class="brand-link">Зелёный квартал — Учёт электроэнергии</router-link>
       </div>
-      <nav class="nav">
-        <router-link to="/" class="nav-link">Справочники</router-link>
-        <router-link to="/meter-readings" class="nav-link">Показания</router-link>
-      </nav>
       <span class="subtitle">Ответственный: энергетик Василий</span>
     </el-header>
     <el-main>
+      <AppBreadcrumbs />
       <slot />
     </el-main>
   </el-container>
@@ -42,23 +40,9 @@ import { Lightning } from '@element-plus/icons-vue';
   font-weight: 600;
 }
 
-.nav {
-  display: flex;
-  gap: 16px;
-  margin-left: 32px;
-}
-
-.nav-link {
+.brand-link {
   color: #fff;
   text-decoration: none;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.nav-link.router-link-active {
-  font-weight: 600;
-  opacity: 1;
-  text-decoration: underline;
 }
 
 .subtitle {

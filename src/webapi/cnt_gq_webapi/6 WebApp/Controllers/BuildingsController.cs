@@ -1,6 +1,7 @@
 using GQ.WebApi.UseCases.Handlers.Apartment.Commands.CreateApartment;
 using GQ.WebApi.UseCases.Handlers.Apartment.Queries.ListApartmentsWithOwners;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
+using GQ.WebApi.UseCases.Handlers.Building.Commands.DeleteBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.UpdateBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Queries.ListBuildings;
 using GQ.WebApi.UseCases.Handlers.MeterReading.Queries.ListBuildingMeterReadings;
@@ -48,6 +49,15 @@ public sealed class BuildingsController(IMediator mediator): ControllerBase
         CancellationToken cancellationToken)
     {
         return mediator.Send(new UpdateBuildingCommand(id, request.Name, request.Address), cancellationToken);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await mediator.Send(new DeleteBuildingCommand(id), cancellationToken);
+        return NoContent();
     }
 
     [HttpGet("{buildingId:guid}/apartments")]

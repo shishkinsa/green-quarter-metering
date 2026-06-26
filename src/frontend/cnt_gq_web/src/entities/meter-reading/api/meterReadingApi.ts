@@ -1,9 +1,17 @@
 import { apiFetch } from '@/shared/api/http';
 import type {
+  ListApartmentMeterReadingsResponse,
   ListBuildingMeterReadingsResponse,
   SubmitMeterReadingPayload,
   SubmitMeterReadingResponse,
 } from '@/entities/meter-reading/model/types';
+
+/**
+ * Возвращает историю показаний по квартире.
+ */
+export function listApartmentMeterReadings(apartmentId: string): Promise<ListApartmentMeterReadingsResponse> {
+  return apiFetch<ListApartmentMeterReadingsResponse>(`/v1/apartments/${apartmentId}/meter-readings`);
+}
 
 /**
  * Передаёт или обновляет показание по квартире.

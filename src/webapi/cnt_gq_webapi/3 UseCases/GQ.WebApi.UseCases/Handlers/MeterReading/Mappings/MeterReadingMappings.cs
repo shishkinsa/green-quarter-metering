@@ -15,7 +15,8 @@ internal static class MeterReadingMappings
             reading.ApartmentId,
             reading.PeriodYear,
             reading.PeriodMonth,
-            reading.Value);
+            reading.Value,
+            reading.SubmittedAt);
     }
 
     internal static BuildingMeterReadingStatusDto ToDto(BuildingMeterReadingStatusReadModel model)

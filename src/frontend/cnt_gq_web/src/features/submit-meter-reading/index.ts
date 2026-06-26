@@ -1,1 +1,1 @@
-export { default as SubmitMeterReadingForm } from './ui/SubmitMeterReadingForm.vue';
+export { default as SubmitMeterReadingDialog } from './ui/SubmitMeterReadingDialog.vue';

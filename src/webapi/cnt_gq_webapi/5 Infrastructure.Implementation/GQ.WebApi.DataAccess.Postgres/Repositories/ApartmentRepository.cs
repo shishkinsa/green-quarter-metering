@@ -15,24 +15,63 @@ public sealed class ApartmentRepository(AppDbContext dbContext): IApartmentRepos
         Guid buildingId,
         CancellationToken cancellationToken = default)
     {
-        return await dbContext.Apartments
+        List<Apartment> apartments = await dbContext.Apartments
             .AsNoTracking()
             .Where(x => x.BuildingId == buildingId)
             .OrderBy(x => x.Number)
-            .GroupJoin(
-                dbContext.Owners.AsNoTracking(),
-                apartment => apartment.Id,
-                owner => owner.ApartmentId,
-                (apartment, owners) => new { apartment, owner = owners.FirstOrDefault() })
-            .Select(x => new ApartmentWithOwnerReadModel(
-                x.apartment.Id,
-                x.apartment.BuildingId,
-                x.apartment.Number,
-                x.apartment.Floor,
-                x.owner != null ? x.owner.Id : (Guid?)null,
-                x.owner != null ? x.owner.FullName : null,
-                x.owner != null ? x.owner.Phone : null))
             .ToListAsync(cancellationToken);
+
+        if(apartments.Count == 0)
+        {
+            return [];
+        }
+
+        HashSet<Guid> apartmentIds = [.. apartments.Select(x => x.Id)];
+
+        Dictionary<Guid, Owner> owners = await dbContext.Owners
+            .AsNoTracking()
+            .Where(x => apartmentIds.Contains(x.ApartmentId))
+            .ToDictionaryAsync(x => x.ApartmentId, cancellationToken);
+
+        List<MeterReading> readings = await dbContext.MeterReadings
+            .AsNoTracking()
+            .Where(x => apartmentIds.Contains(x.ApartmentId))
+            .ToListAsync(cancellationToken);
+
+        DateTime utcNow = DateTime.UtcNow;
+        int currentYear = utcNow.Year;
+        int currentMonth = utcNow.Month;
+
+        List<ApartmentWithOwnerReadModel> result = new(apartments.Count);
+        foreach(Apartment apartment in apartments)
+        {
+            owners.TryGetValue(apartment.Id, out Owner? owner);
+            List<MeterReading> apartmentReadings = readings
+                .Where(x => x.ApartmentId == apartment.Id)
+                .ToList();
+
+            MeterReading? lastReading = apartmentReadings
+                .OrderByDescending(x => x.PeriodYear)
+                .ThenByDescending(x => x.PeriodMonth)
+                .FirstOrDefault();
+
+            bool currentPeriodSubmitted = apartmentReadings.Any(
+                x => x.PeriodYear == currentYear && x.PeriodMonth == currentMonth);
+
+            result.Add(new ApartmentWithOwnerReadModel(
+                apartment.Id,
+                apartment.BuildingId,
+                apartment.Number,
+                apartment.Floor,
+                owner?.Id,
+                owner?.FullName,
+                owner?.Phone,
+                lastReading?.SubmittedAt,
+                lastReading?.Value,
+                currentPeriodSubmitted));
+        }
+
+        return result;
     }
 
     public Task<Apartment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -57,6 +96,23 @@ public sealed class ApartmentRepository(AppDbContext dbContext): IApartmentRepos
     public async Task AddAsync(Apartment apartment, CancellationToken cancellationToken = default)
     {
         dbContext.Apartments.Add(apartment);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Guid>> ListIdsByBuildingAsync(
+        Guid buildingId,
+        CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Apartments
+            .AsNoTracking()
+            .Where(x => x.BuildingId == buildingId)
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(Apartment apartment, CancellationToken cancellationToken = default)
+    {
+        dbContext.Apartments.Remove(apartment);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

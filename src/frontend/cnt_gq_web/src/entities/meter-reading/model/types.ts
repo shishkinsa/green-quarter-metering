@@ -5,5 +5,6 @@ export type BuildingMeterReadingStatus = components['schemas']['BuildingMeterRea
 
 export type SubmitMeterReadingResponse = components['schemas']['SubmitMeterReadingResponse'];
 export type ListBuildingMeterReadingsResponse = components['schemas']['ListBuildingMeterReadingsResponse'];
+export type ListApartmentMeterReadingsResponse = components['schemas']['ListApartmentMeterReadingsResponse'];
 
 export type SubmitMeterReadingPayload = components['schemas']['SubmitMeterReadingRequest'];

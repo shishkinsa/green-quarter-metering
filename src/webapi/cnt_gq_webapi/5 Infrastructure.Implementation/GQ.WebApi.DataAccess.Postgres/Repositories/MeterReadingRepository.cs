@@ -97,4 +97,31 @@ public sealed class MeterReadingRepository(AppDbContext dbContext): IMeterReadin
 
         return result;
     }
+
+    public async Task<IReadOnlyList<MeterReading>> ListByApartmentAsync(
+        Guid apartmentId,
+        CancellationToken cancellationToken = default)
+    {
+        return await dbContext.MeterReadings
+            .AsNoTracking()
+            .Where(x => x.ApartmentId == apartmentId)
+            .OrderByDescending(x => x.PeriodYear)
+            .ThenByDescending(x => x.PeriodMonth)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteByApartmentAsync(Guid apartmentId, CancellationToken cancellationToken = default)
+    {
+        List<MeterReading> readings = await dbContext.MeterReadings
+            .Where(x => x.ApartmentId == apartmentId)
+            .ToListAsync(cancellationToken);
+
+        if(readings.Count == 0)
+        {
+            return;
+        }
+
+        dbContext.MeterReadings.RemoveRange(readings);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
 }
