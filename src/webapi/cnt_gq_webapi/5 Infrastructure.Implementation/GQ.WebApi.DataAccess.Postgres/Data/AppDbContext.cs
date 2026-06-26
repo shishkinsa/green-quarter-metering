@@ -16,6 +16,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options): DbCont
 
     public DbSet<Owner> Owners => Set<Owner>();
 
+    public DbSet<MeterReading> MeterReadings => Set<MeterReading>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Building>(entity =>
@@ -49,6 +51,18 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options): DbCont
                 .WithMany()
                 .HasForeignKey(x => x.ApartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<MeterReading>(entity =>
+        {
+            entity.ToTable("meter_readings");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Value).HasPrecision(18, 3);
+            entity.HasIndex(x => new { x.ApartmentId, x.PeriodYear, x.PeriodMonth }).IsUnique();
+            entity.HasOne<Apartment>()
+                .WithMany()
+                .HasForeignKey(x => x.ApartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

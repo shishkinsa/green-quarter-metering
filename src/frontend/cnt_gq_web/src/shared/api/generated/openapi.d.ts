@@ -91,6 +91,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/apartments/{apartmentId}/meter-readings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Передать или обновить показание по квартире */
+        post: operations["submitMeterReading"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/buildings/{buildingId}/meter-readings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Сводка сдачи показаний по дому за период */
+        get: operations["listBuildingMeterReadings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -160,6 +194,37 @@ export interface components {
         };
         UpsertApartmentOwnerResponse: {
             item: components["schemas"]["OwnerDto"];
+        };
+        MeterReadingDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            apartmentId: string;
+            periodYear: number;
+            periodMonth: number;
+            /** Format: decimal */
+            value: number;
+        };
+        SubmitMeterReadingRequest: {
+            periodYear: number;
+            periodMonth: number;
+            /** Format: decimal */
+            value: number;
+        };
+        SubmitMeterReadingResponse: {
+            item: components["schemas"]["MeterReadingDto"];
+        };
+        BuildingMeterReadingStatusDto: {
+            /** Format: uuid */
+            apartmentId: string;
+            apartmentNumber: string;
+            ownerFullName?: string | null;
+            /** Format: decimal */
+            readingValue?: number | null;
+            submitted: boolean;
+        };
+        ListBuildingMeterReadingsResponse: {
+            items: components["schemas"]["BuildingMeterReadingStatusDto"][];
         };
     };
     responses: never;
@@ -389,6 +454,94 @@ export interface operations {
                 content?: never;
             };
             /** @description Квартира не найдена */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    submitMeterReading: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                apartmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitMeterReadingRequest"];
+            };
+        };
+        responses: {
+            /** @description Показание обновлено за тот же период */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitMeterReadingResponse"];
+                };
+            };
+            /** @description Показание создано */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitMeterReadingResponse"];
+                };
+            };
+            /** @description Ошибка валидации */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Квартира не найдена */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listBuildingMeterReadings: {
+        parameters: {
+            query: {
+                periodYear: number;
+                periodMonth: number;
+            };
+            header?: never;
+            path: {
+                buildingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Список квартир со статусом сдачи */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListBuildingMeterReadingsResponse"];
+                };
+            };
+            /** @description Ошибка валидации параметров периода */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Дом не найден */
             404: {
                 headers: {
                     [name: string]: unknown;

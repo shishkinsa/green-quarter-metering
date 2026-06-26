@@ -1,0 +1,8 @@
+Submit meter reading creates new | SubmitMeterReadingCommandHandler_CreatesReading
+Submit meter reading updates same month | SubmitMeterReadingCommandHandler_UpdatesSameMonth
+Submit meter reading when less than previous | SubmitMeterReadingCommandHandler_WhenLessThanPrevious_ThrowsValidation
+Submit meter reading when apartment not found | SubmitMeterReadingCommandHandler_WhenApartmentNotFound_ThrowsNotFound
+Submit meter reading with invalid month | SubmitMeterReadingCommandHandler_WhenInvalidMonth_ThrowsValidation
+List building meter readings returns status | ListBuildingMeterReadingsQueryHandler_ReturnsStatus
+List building meter readings when building not found | ListBuildingMeterReadingsQueryHandler_WhenBuildingNotFound_ThrowsNotFound
+List building meter readings with invalid month | ListBuildingMeterReadingsQueryHandler_WhenInvalidMonth_ThrowsValidation

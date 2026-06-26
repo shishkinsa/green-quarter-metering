@@ -67,6 +67,33 @@ namespace GQ.WebApi.DataAccess.Postgres.Migrations
                     b.ToTable("buildings", (string)null);
                 });
 
+            modelBuilder.Entity("GQ.WebApi.Entities.MeterReading", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ApartmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("PeriodMonth")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PeriodYear")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Value")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApartmentId", "PeriodYear", "PeriodMonth")
+                        .IsUnique();
+
+                    b.ToTable("meter_readings", (string)null);
+                });
+
             modelBuilder.Entity("GQ.WebApi.Entities.Owner", b =>
                 {
                     b.Property<Guid>("Id")
@@ -98,6 +125,15 @@ namespace GQ.WebApi.DataAccess.Postgres.Migrations
                     b.HasOne("GQ.WebApi.Entities.Building", null)
                         .WithMany()
                         .HasForeignKey("BuildingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GQ.WebApi.Entities.MeterReading", b =>
+                {
+                    b.HasOne("GQ.WebApi.Entities.Apartment", null)
+                        .WithMany()
+                        .HasForeignKey("ApartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

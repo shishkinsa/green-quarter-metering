@@ -3,6 +3,7 @@ using GQ.WebApi.UseCases.Handlers.Apartment.Queries.ListApartmentsWithOwners;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.CreateBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Commands.UpdateBuilding;
 using GQ.WebApi.UseCases.Handlers.Building.Queries.ListBuildings;
+using GQ.WebApi.UseCases.Handlers.MeterReading.Queries.ListBuildingMeterReadings;
 
 using MediatR;
 
@@ -76,6 +77,21 @@ public sealed class BuildingsController(IMediator mediator): ControllerBase
             nameof(ListApartments),
             new { buildingId },
             response);
+    }
+
+    [HttpGet("{buildingId:guid}/meter-readings")]
+    [ProducesResponseType(typeof(ListBuildingMeterReadingsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public Task<ListBuildingMeterReadingsResponse> ListMeterReadings(
+        Guid buildingId,
+        [FromQuery] int periodYear,
+        [FromQuery] int periodMonth,
+        CancellationToken cancellationToken)
+    {
+        return mediator.Send(
+            new ListBuildingMeterReadingsQuery(buildingId, periodYear, periodMonth),
+            cancellationToken);
     }
 }
 

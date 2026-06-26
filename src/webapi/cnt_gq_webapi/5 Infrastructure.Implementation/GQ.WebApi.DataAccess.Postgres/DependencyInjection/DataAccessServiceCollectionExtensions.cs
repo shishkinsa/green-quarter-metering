@@ -23,6 +23,7 @@ public static class DataAccessServiceCollectionExtensions
         services.AddScoped<IBuildingRepository, BuildingRepository>();
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
         services.AddScoped<IOwnerRepository, OwnerRepository>();
+        services.AddScoped<IMeterReadingRepository, MeterReadingRepository>();
 
         return services;
     }
