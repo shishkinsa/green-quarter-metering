@@ -8,8 +8,7 @@
 - **Repositories**: `IBuildingRepository`, `IApartmentRepository`, `IOwnerRepository`
 - **UseCases**: `Handlers/Building/`, `Handlers/Apartment/`, `Handlers/Owner/`
 - **API**: `BuildingsController`, `ApartmentsController`
-- **Persistence**: таблицы `buildings`, `apartments`, `owners`; миграция `AddBuildingsApartmentsOwners`
-- **Seed**: `DatabaseSeeder.SeedDirectories`
+- **Persistence**: таблицы `buildings`, `apartments`, `owners`; миграции `AddBuildingsApartmentsOwners`, `SeedDirectoryDemoData`
 
 ## Frontend (FSD)
 

@@ -33,6 +33,7 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:DefaultConnection"] = string.Empty,
+                ["Database:AutoMigrate"] = "false",
             });
         });
 
@@ -60,7 +61,7 @@ public sealed class WebApiFactory : WebApplicationFactory<Program>
 
         using var scope = host.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        DatabaseSeeder.SeedDirectories(db);
+        IntegrationTestDatabase.Seed(db);
 
         return host;
     }
