@@ -25,7 +25,7 @@ dotnet test $testProject --verbosity minimal
 if ($LASTEXITCODE -ne 0) { throw "Backend tests failed" }
 
 Write-Host "=== Manifest (SPDF index) ===" -ForegroundColor Cyan
-& (Join-Path $root 'scripts\check-manifest.ps1')
+& (Join-Path $root 'scripts\check-manifest.ps1') -Root $root
 if ($LASTEXITCODE -ne 0) { throw "Manifest check failed" }
 
 Write-Host "=== Spec coverage (examples API scenarios) ===" -ForegroundColor Cyan

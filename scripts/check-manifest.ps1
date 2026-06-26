@@ -1,5 +1,14 @@
+param(
+    [string]$Root
+)
+
 $ErrorActionPreference = 'Stop'
-$root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+
+if ([string]::IsNullOrWhiteSpace($Root)) {
+    $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+}
+
+$Root = (Resolve-Path -LiteralPath $Root).Path
 
 $requiredPaths = @(
     'docs\README.md',
@@ -24,8 +33,8 @@ $requiredPaths = @(
 
 $missing = @()
 foreach ($rel in $requiredPaths) {
-    $full = Join-Path $root $rel
-    if (-not (Test-Path $full)) {
+    $full = [System.IO.Path]::GetFullPath((Join-Path $Root ($rel -replace '/', [IO.Path]::DirectorySeparatorChar)))
+    if (-not (Test-Path -LiteralPath $full)) {
         $missing += $rel
     }
 }
@@ -36,8 +45,11 @@ if ($missing.Count -gt 0) {
     exit 1
 }
 
-$manifestContent = Get-Content (Join-Path $root 'manifest.yaml') -Raw
-$specDirs = Get-ChildItem (Join-Path $root 'openspec\specs') -Directory | ForEach-Object { $_.Name }
+$manifestPath = Join-Path $Root 'manifest.yaml'
+$manifestContent = Get-Content -LiteralPath $manifestPath -Raw
+$specRoot = Join-Path $Root 'openspec\specs'
+$specDirs = Get-ChildItem -LiteralPath $specRoot -Directory | ForEach-Object { $_.Name }
+
 foreach ($cap in $specDirs) {
     $pattern = '(?m)^\s+' + [regex]::Escape($cap) + '\s*:'
     if ($manifestContent -notmatch $pattern) {
@@ -47,3 +59,4 @@ foreach ($cap in $specDirs) {
 }
 
 Write-Host "Manifest check OK ($($requiredPaths.Count) paths, $($specDirs.Count) capabilities)" -ForegroundColor Green
+exit 0
