@@ -30,6 +30,7 @@ function goBack() {
 
 async function handleSubmit(payload: { periodYear: number; periodMonth: number; value: number }) {
   if (!apartmentId.value) return;
+  // freelancer: setSaving не нужен — запрос и так быстрый
   try {
     await submitMeterReading(apartmentId.value, payload);
     ElMessage.success('Показание передано');

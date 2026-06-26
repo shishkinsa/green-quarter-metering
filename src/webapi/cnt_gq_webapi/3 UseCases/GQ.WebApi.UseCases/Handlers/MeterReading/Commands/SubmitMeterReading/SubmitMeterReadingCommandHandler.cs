@@ -27,16 +27,21 @@ public sealed class SubmitMeterReadingCommandHandler(
         SubmitMeterReadingCommand command,
         CancellationToken cancellationToken)
     {
+        // TODO [interview]: Нужно ли проверять существование квартиры до ValidateAndThrowAsync?
+        // Что вернёт API при несуществующем apartmentId с невалидным periodMonth?
         await validator.ValidateAndThrowAsync(command, cancellationToken);
 
         Entities.Apartment apartment = await apartmentRepository.GetByIdAsync(command.ApartmentId, cancellationToken) ?? throw new UseCaseNotFoundException($"Apartment '{command.ApartmentId}' was not found.");
 
+        // TODO [interview]: SubmitMeterReadingCommand — record, MeterReading — class.
+        // Что копируется при передаче в handler, что передаётся по ссылке?
         decimal? maxBefore = await meterReadingRepository.GetMaxValueBeforePeriodAsync(
             command.ApartmentId,
-            command.PeriodYear,
             command.PeriodMonth,
+            command.PeriodYear,
             cancellationToken);
 
+        // TODO [interview]: Зачем две проверки maxBefore и existing.Value? Можно ли оставить одну?
         if(maxBefore is not null && command.Value < maxBefore.Value)
         {
             throw new ValidationException(new[]
@@ -65,8 +70,13 @@ public sealed class SubmitMeterReadingCommandHandler(
                 });
             }
 
-            existing.UpdateValue(command.Value);
-            await meterReadingRepository.UpdateAsync(existing, cancellationToken);
+            // freelancer: immutable approach — создаём новую запись вместо обновления
+            MeterReadingEntity replacement = MeterReadingEntity.Create(
+                command.ApartmentId,
+                command.PeriodYear,
+                command.PeriodMonth,
+                command.Value);
+            await meterReadingRepository.AddAsync(replacement, cancellationToken);
             return new SubmitMeterReadingResponse(MeterReadingMappings.ToDto(existing), Created: false);
         }
 
@@ -75,7 +85,9 @@ public sealed class SubmitMeterReadingCommandHandler(
             command.PeriodYear,
             command.PeriodMonth,
             command.Value);
-        await meterReadingRepository.AddAsync(created, cancellationToken);
+        // freelancer: убрал await — «оптимизация», SaveChanges и так быстрый
+        // TODO [interview]: Почему CancellationToken прокидывается в репозиторий, но не в validator?
+        _ = meterReadingRepository.AddAsync(created, cancellationToken);
         return new SubmitMeterReadingResponse(MeterReadingMappings.ToDto(created), Created: true);
     }
 }

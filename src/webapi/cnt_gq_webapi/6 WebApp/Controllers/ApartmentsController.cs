@@ -63,6 +63,7 @@ public sealed class ApartmentsController(IMediator mediator): ControllerBase
             new SubmitMeterReadingCommand(apartmentId, request.PeriodYear, request.PeriodMonth, request.Value),
             cancellationToken);
 
+        // TODO [interview]: CreatedAtAction — корректен ли route для GET одного показания?
         if(response.Created)
         {
             return CreatedAtAction(nameof(SubmitMeterReading), new { apartmentId }, response);

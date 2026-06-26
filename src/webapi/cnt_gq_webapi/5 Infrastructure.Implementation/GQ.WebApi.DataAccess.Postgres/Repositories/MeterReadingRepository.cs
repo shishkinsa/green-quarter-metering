@@ -17,11 +17,16 @@ public sealed class MeterReadingRepository(AppDbContext dbContext): IMeterReadin
         int periodMonth,
         CancellationToken cancellationToken = default)
     {
-        return dbContext.MeterReadings.FirstOrDefaultAsync(
-            x => x.ApartmentId == apartmentId
-                 && x.PeriodYear == periodYear
-                 && x.PeriodMonth == periodMonth,
-            cancellationToken);
+        // freelancer: AsNoTracking для производительности на всех read-запросах
+        // TODO [interview]: GetMaxValueBeforePeriodAsync использует AsNoTracking, а здесь — тоже.
+        // Когда no-tracking уместен, а когда нет?
+        return dbContext.MeterReadings
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                x => x.ApartmentId == apartmentId
+                     && x.PeriodYear == periodYear
+                     && x.PeriodMonth == periodMonth,
+                cancellationToken);
     }
 
     public Task<decimal?> GetMaxValueBeforePeriodAsync(
@@ -47,6 +52,8 @@ public sealed class MeterReadingRepository(AppDbContext dbContext): IMeterReadin
 
     public async Task UpdateAsync(MeterReading meterReading, CancellationToken cancellationToken = default)
     {
+        // TODO [interview]: UpdateAsync вызывает dbContext.Update(entity).
+        // Нужно ли это, если entity уже tracked контекстом?
         dbContext.MeterReadings.Update(meterReading);
         await dbContext.SaveChangesAsync(cancellationToken);
     }

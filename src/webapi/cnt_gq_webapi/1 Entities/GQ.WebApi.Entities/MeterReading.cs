@@ -56,6 +56,8 @@ public sealed class MeterReading
 
     public void UpdateValue(decimal value)
     {
+        // TODO [interview]: UpdateValue меняет объект in-place.
+        // Когда это безопасно с EF Core, а когда нет?
         ValidateValue(value);
         Value = value;
         SubmittedAt = DateTimeOffset.UtcNow;
