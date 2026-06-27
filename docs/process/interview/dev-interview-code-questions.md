@@ -149,7 +149,7 @@ await repository.SaveAsync(reading);
 
 ---
 
-### Q6. ООП — Liskov и контракт
+### Q6. ООП — Liskov
 
 **Почему этот код может нарушать принцип подстановки Лисков? Как бы вы спроектировали иначе?**
 
@@ -181,7 +181,7 @@ void NotifyAll(IEnumerable<Notifier> notifiers, string text)
 
 ---
 
-### Q7. ASP.NET Core — DI и время жизни
+### Q7. ASP.NET Core
 
 **Что пойдёт не так при такой регистрации? Какой lifetime у сервисов и почему это опасно?**
 
@@ -203,7 +203,7 @@ public sealed class ReadingCache
 
 ---
 
-### Q8. ASP.NET Core — коды ответа API
+### Q8. ASP.NET Core
 
 **Клиент отправил `POST /api/v1/apartments/{id}/meter-readings` с несуществующим `id` и телом `{ "periodMonth": 13, "periodYear": 2026, "value": 100 }`.**
 
@@ -220,7 +220,7 @@ var apartment = await apartmentRepository.GetByIdAsync(command.ApartmentId, ct)
 
 ---
 
-### Q9. ASP.NET Core — async в контроллере
+### Q9. ASP.NET Core 
 
 **В чём проблема этого action? Что может произойти в production?**
 
@@ -239,9 +239,9 @@ public IActionResult Submit(Guid apartmentId, SubmitRequest request)
 
 ---
 
-### Q10. Vue 3 — reactivity (ref)
+### Q10. Vue 3 
 
-**Что выведет `console.log` после клика по кнопке? Почему?**
+**Что отобразится в `<p>{{ count }}</p>` после клика по каждой кнопке? Почему одна кнопка не меняет счётчик?**
 
 ```vue
 <script setup lang="ts">
