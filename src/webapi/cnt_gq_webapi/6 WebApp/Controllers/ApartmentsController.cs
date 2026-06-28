@@ -1,4 +1,5 @@
 using GQ.WebApi.UseCases.Handlers.Apartment.Commands.DeleteApartment;
+using GQ.WebApi.UseCases.Handlers.Apartment.Commands.UpdateApartment;
 using GQ.WebApi.UseCases.Handlers.MeterReading.Commands.SubmitMeterReading;
 using GQ.WebApi.UseCases.Handlers.MeterReading.Queries.ListApartmentMeterReadings;
 using GQ.WebApi.UseCases.Handlers.Owner.Commands.UpsertApartmentOwner;
@@ -16,6 +17,25 @@ namespace GQ.WebApi.WebApp.Controllers;
 [Route("api/v1/apartments")]
 public sealed class ApartmentsController(IMediator mediator): ControllerBase
 {
+    [HttpPut("{apartmentId:guid}")]
+    [ProducesResponseType(typeof(UpdateApartmentResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public Task<UpdateApartmentResponse> Update(
+        Guid apartmentId,
+        [FromBody] UpdateApartmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        return mediator.Send(
+            new UpdateApartmentCommand(
+                apartmentId,
+                request.Number,
+                request.Floor,
+                request.MeterVerificationDate),
+            cancellationToken);
+    }
+
     [HttpDelete("{apartmentId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -74,6 +94,9 @@ public sealed class ApartmentsController(IMediator mediator): ControllerBase
 
 /// <summary>Тело запроса назначения или обновления владельца квартиры.</summary>
 public sealed record UpsertApartmentOwnerRequest(string FullName, string? Phone);
+
+/// <summary>Тело запроса обновления квартиры.</summary>
+public sealed record UpdateApartmentRequest(string Number, int? Floor, DateOnly? MeterVerificationDate);
 
 /// <summary>Тело запроса передачи показания.</summary>
 public sealed record SubmitMeterReadingRequest(int PeriodYear, int PeriodMonth, decimal Value);

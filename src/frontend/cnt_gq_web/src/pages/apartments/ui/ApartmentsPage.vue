@@ -6,6 +6,7 @@ import {
   ApartmentsTable,
   createApartment,
   fetchBuildings,
+  updateApartment,
   upsertApartmentOwner,
   useApartments,
   type ApartmentWithOwner,
@@ -24,7 +25,7 @@ const buildingName = computed(() => (route.query.buildingName as string) || buil
 const building = ref<Building | null>(null);
 const { items, loading, load } = useApartments(buildingId);
 
-const createVisible = ref(false);
+const apartmentDialogVisible = ref(false);
 const ownerVisible = ref(false);
 const editingApartment = ref<ApartmentWithOwner | null>(null);
 
@@ -46,17 +47,45 @@ function goToReadings(apartment: ApartmentWithOwner) {
   });
 }
 
+function openCreate() {
+  editingApartment.value = null;
+  apartmentDialogVisible.value = true;
+}
+
+function openEdit(apartment: ApartmentWithOwner) {
+  editingApartment.value = apartment;
+  apartmentDialogVisible.value = true;
+}
+
 function openOwner(apartment: ApartmentWithOwner) {
   editingApartment.value = apartment;
   ownerVisible.value = true;
 }
 
-async function handleCreate(payload: { number: string; floor: number | null }) {
-  if (!buildingId.value) return;
+async function handleSaveApartment(payload: {
+  number: string;
+  floor: number | null;
+  meterVerificationDate: string | null;
+}) {
   try {
-    await createApartment(buildingId.value, payload.number, payload.floor);
-    ElMessage.success('Квартира добавлена');
-    createVisible.value = false;
+    if (editingApartment.value) {
+      await updateApartment(
+        editingApartment.value.id,
+        payload.number,
+        payload.floor,
+        payload.meterVerificationDate,
+      );
+      ElMessage.success('Квартира обновлена');
+    } else if (buildingId.value) {
+      await createApartment(
+        buildingId.value,
+        payload.number,
+        payload.floor,
+        payload.meterVerificationDate,
+      );
+      ElMessage.success('Квартира добавлена');
+    }
+    apartmentDialogVisible.value = false;
     await load();
   } catch (error) {
     notifyApiError(error);
@@ -95,18 +124,23 @@ async function handleDelete(apartment: ApartmentWithOwner) {
     />
 
     <div style="margin: 16px 0">
-      <el-button type="primary" @click="createVisible = true">Добавить квартиру</el-button>
+      <el-button type="primary" @click="openCreate">Добавить квартиру</el-button>
     </div>
 
     <ApartmentsTable
       :items="items"
       :loading="loading"
       @row-click="goToReadings"
+      @edit="openEdit"
       @edit-owner="openOwner"
       @delete="handleDelete"
     />
 
-    <CreateApartmentDialog v-model:visible="createVisible" @submit="handleCreate" />
+    <CreateApartmentDialog
+      v-model:visible="apartmentDialogVisible"
+      :apartment="editingApartment"
+      @submit="handleSaveApartment"
+    />
     <UpsertOwnerDialog
       v-model:visible="ownerVisible"
       :apartment="editingApartment"

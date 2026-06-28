@@ -33,6 +33,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options): DbCont
             entity.ToTable("apartments");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Number).HasMaxLength(32).IsRequired();
+            entity.Property(x => x.MeterVerificationDate);
             entity.HasIndex(x => new { x.BuildingId, x.Number }).IsUnique();
             entity.HasOne<Building>()
                 .WithMany()

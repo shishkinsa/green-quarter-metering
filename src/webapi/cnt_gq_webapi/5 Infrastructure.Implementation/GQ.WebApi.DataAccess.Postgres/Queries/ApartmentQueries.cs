@@ -63,6 +63,7 @@ public sealed class ApartmentQueries(IDbContext db): IApartmentQueries
                 apartment.BuildingId,
                 apartment.Number,
                 apartment.Floor,
+                apartment.MeterVerificationDate,
                 owner?.Id,
                 owner?.FullName,
                 owner?.Phone,

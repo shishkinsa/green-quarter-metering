@@ -9,6 +9,7 @@ public sealed record ApartmentWithOwnerDto(
     Guid BuildingId,
     string Number,
     int? Floor,
+    DateOnly? MeterVerificationDate,
     Guid? OwnerId,
     string? OwnerFullName,
     string? OwnerPhone,

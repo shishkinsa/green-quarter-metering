@@ -10,6 +10,7 @@ export {
   deleteBuilding,
   fetchApartmentsWithOwners,
   fetchBuildings,
+  updateApartment,
   updateBuilding,
   upsertApartmentOwner,
 } from './api/buildingApi';

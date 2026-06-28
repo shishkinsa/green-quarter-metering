@@ -83,7 +83,8 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
+        /** Обновить квартиру */
+        put: operations["updateApartment"];
         post?: never;
         /** Удалить квартиру */
         delete: operations["deleteApartment"];
@@ -167,6 +168,8 @@ export interface components {
             buildingId: string;
             number: string;
             floor?: number | null;
+            /** Format: date */
+            meterVerificationDate?: string | null;
             /** Format: uuid */
             ownerId?: string | null;
             ownerFullName?: string | null;
@@ -205,6 +208,17 @@ export interface components {
         CreateApartmentRequest: {
             number: string;
             floor?: number | null;
+            /** Format: date */
+            meterVerificationDate?: string | null;
+        };
+        UpdateApartmentRequest: {
+            number: string;
+            floor?: number | null;
+            /** Format: date */
+            meterVerificationDate?: string | null;
+        };
+        UpdateApartmentResponse: {
+            item: components["schemas"]["ApartmentWithOwnerDto"];
         };
         CreateApartmentResponse: {
             item: components["schemas"]["ApartmentWithOwnerDto"];
@@ -463,6 +477,53 @@ export interface operations {
                 content?: never;
             };
             /** @description Дом не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Дубликат номера квартиры */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateApartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                apartmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateApartmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Обновлено */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateApartmentResponse"];
+                };
+            };
+            /** @description Ошибка валидации */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Квартира не найдена */
             404: {
                 headers: {
                     [name: string]: unknown;

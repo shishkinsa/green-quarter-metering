@@ -4,6 +4,7 @@ using GQ.WebApi.Entities;
 using GQ.WebApi.Infrastructure.Interfaces.DataAccess;
 using GQ.WebApi.UseCases.Exceptions;
 using GQ.WebApi.UseCases.Handlers.Building.Dto;
+using GQ.WebApi.UseCases.Handlers.Building.Mappings;
 
 using MediatR;
 
@@ -43,22 +44,14 @@ public sealed class CreateApartmentCommandHandler(
                 $"Apartment number '{command.Number}' already exists in building '{command.BuildingId}'.");
         }
 
-        ApartmentEntity apartment = ApartmentEntity.Create(command.BuildingId, command.Number, command.Floor);
+        ApartmentEntity apartment = ApartmentEntity.Create(
+            command.BuildingId,
+            command.Number,
+            command.Floor,
+            command.MeterVerificationDate);
         db.Apartments.Add(apartment);
         await db.SaveChangesAsync(cancellationToken);
 
-        var item = new ApartmentWithOwnerDto(
-            apartment.Id,
-            apartment.BuildingId,
-            apartment.Number,
-            apartment.Floor,
-            null,
-            null,
-            null,
-            null,
-            null,
-            false);
-
-        return new CreateApartmentResponse(item);
+        return new CreateApartmentResponse(DirectoryMappings.ToApartmentDto(apartment));
     }
 }

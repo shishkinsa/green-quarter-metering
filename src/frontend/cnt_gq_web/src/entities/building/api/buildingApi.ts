@@ -4,6 +4,7 @@ import type {
   CreateBuildingResponse,
   ListApartmentsWithOwnersResponse,
   ListBuildingsResponse,
+  UpdateApartmentResponse,
   UpdateBuildingResponse,
   UpsertApartmentOwnerResponse,
 } from '@/entities/building/model/types';
@@ -46,11 +47,26 @@ export function createApartment(
   buildingId: string,
   number: string,
   floor: number | null,
+  meterVerificationDate: string | null = null,
 ): Promise<CreateApartmentResponse> {
   return apiFetch<CreateApartmentResponse>(`/v1/buildings/${buildingId}/apartments`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ number, floor }),
+    body: JSON.stringify({ number, floor, meterVerificationDate }),
+  });
+}
+
+/** Обновляет квартиру. */
+export function updateApartment(
+  apartmentId: string,
+  number: string,
+  floor: number | null,
+  meterVerificationDate: string | null,
+): Promise<UpdateApartmentResponse> {
+  return apiFetch<UpdateApartmentResponse>(`/v1/apartments/${apartmentId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ number, floor, meterVerificationDate }),
   });
 }
 

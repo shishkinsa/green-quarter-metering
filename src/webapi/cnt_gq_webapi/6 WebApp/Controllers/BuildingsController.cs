@@ -81,7 +81,11 @@ public sealed class BuildingsController(IMediator mediator): ControllerBase
         CancellationToken cancellationToken)
     {
         CreateApartmentResponse response = await mediator.Send(
-            new CreateApartmentCommand(buildingId, request.Number, request.Floor),
+            new CreateApartmentCommand(
+                buildingId,
+                request.Number,
+                request.Floor,
+                request.MeterVerificationDate),
             cancellationToken);
         return CreatedAtAction(
             nameof(ListApartments),
@@ -112,4 +116,4 @@ public sealed record CreateBuildingRequest(string Name, string? Address);
 public sealed record UpdateBuildingRequest(string Name, string? Address);
 
 /// <summary>Тело запроса создания квартиры.</summary>
-public sealed record CreateApartmentRequest(string Number, int? Floor);
+public sealed record CreateApartmentRequest(string Number, int? Floor, DateOnly? MeterVerificationDate);

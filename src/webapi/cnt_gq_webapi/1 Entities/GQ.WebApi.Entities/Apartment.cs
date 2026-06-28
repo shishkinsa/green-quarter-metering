@@ -13,16 +13,23 @@ public sealed class Apartment
 
     public int? Floor { get; private set; }
 
+    public DateOnly? MeterVerificationDate { get; private set; }
+
     private Apartment()
     {
     }
 
-    public static Apartment Create(Guid buildingId, string number, int? floor)
+    public static Apartment Create(Guid buildingId, string number, int? floor, DateOnly? meterVerificationDate = null)
     {
-        return Create(Guid.NewGuid(), buildingId, number, floor);
+        return Create(Guid.NewGuid(), buildingId, number, floor, meterVerificationDate);
     }
 
-    public static Apartment Create(Guid id, Guid buildingId, string number, int? floor)
+    public static Apartment Create(
+        Guid id,
+        Guid buildingId,
+        string number,
+        int? floor,
+        DateOnly? meterVerificationDate = null)
     {
         if(id == Guid.Empty)
         {
@@ -39,12 +46,40 @@ public sealed class Apartment
             throw new ArgumentException("Number is required.", nameof(number));
         }
 
+        ValidateMeterVerificationDate(meterVerificationDate);
+
         return new Apartment
         {
             Id = id,
             BuildingId = buildingId,
             Number = number.Trim(),
-            Floor = floor
+            Floor = floor,
+            MeterVerificationDate = meterVerificationDate
         };
+    }
+
+    public void Update(string number, int? floor, DateOnly? meterVerificationDate)
+    {
+        if(string.IsNullOrWhiteSpace(number))
+        {
+            throw new ArgumentException("Number is required.", nameof(number));
+        }
+
+        ValidateMeterVerificationDate(meterVerificationDate);
+
+        Number = number.Trim();
+        Floor = floor;
+        MeterVerificationDate = meterVerificationDate;
+    }
+
+    private static void ValidateMeterVerificationDate(DateOnly? meterVerificationDate)
+    {
+        if(meterVerificationDate is not null
+           && meterVerificationDate.Value > DateOnly.FromDateTime(DateTime.UtcNow))
+        {
+            throw new ArgumentException(
+                "Meter verification date cannot be in the future.",
+                nameof(meterVerificationDate));
+        }
     }
 }

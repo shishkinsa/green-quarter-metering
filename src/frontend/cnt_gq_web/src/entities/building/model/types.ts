@@ -9,4 +9,5 @@ export type ListApartmentsWithOwnersResponse = components['schemas']['ListApartm
 export type CreateBuildingResponse = components['schemas']['CreateBuildingResponse'];
 export type UpdateBuildingResponse = components['schemas']['UpdateBuildingResponse'];
 export type CreateApartmentResponse = components['schemas']['CreateApartmentResponse'];
+export type UpdateApartmentResponse = components['schemas']['UpdateApartmentResponse'];
 export type UpsertApartmentOwnerResponse = components['schemas']['UpsertApartmentOwnerResponse'];
